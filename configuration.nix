@@ -4,19 +4,8 @@
   imports = [ ./hardware-configuration.nix ];
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [
-    (final: prev: {
-      qq = final.callPackage ./pkgs/qq { };
-    })
-  ];
 
   boot.kernelParams = [ "nouveau.modeset=0" ];
-  boot.kernelModules = [ "tun" ];
-
-  systemd.tmpfiles.rules = [
-    "d /dev/net 0755 root root -"
-    "c /dev/net/tun 0666 root root - 10:200"
-  ];
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", ATTR{brightness}="3"
@@ -35,8 +24,8 @@
     '';
   };
 
-  security.wrappers.verge-mihomo = {
-    source = "${pkgs.clash-verge-rev}/bin/verge-mihomo";
+  security.wrappers.clash-verge = {
+    source = lib.getExe pkgs.clash-verge-rev;
     capabilities = "cap_net_admin,cap_net_bind_service+ep";
     owner = "root";
     group = "root";
@@ -54,48 +43,48 @@
     ];
   };
 
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      alsa-lib
-      at-spi2-atk
-      at-spi2-core
-      atk
-      cairo
-      cups
-      dbus
-      expat
-      fontconfig
-      freetype
-      gdk-pixbuf
-      glib
-      gtk3
-      libdrm
-      libglvnd
-      libnotify
-      libpulseaudio
-      libuuid
-      libxkbcommon
-      mesa
-      nspr
-      nss
-      pango
-      stdenv.cc.cc
-      systemd
-      xorg.libX11
-      xorg.libXScrnSaver
-      xorg.libXcomposite
-      xorg.libXcursor
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXi
-      xorg.libXrandr
-      xorg.libXrender
-      xorg.libXtst
-      xorg.libxcb
-    ];
-  };
+  # programs.nix-ld = {
+  #   enable = true;
+  #   libraries = with pkgs; [
+  #     alsa-lib
+  #     at-spi2-atk
+  #     at-spi2-core
+  #     atk
+  #     cairo
+  #     cups
+  #     dbus
+  #     expat
+  #     fontconfig
+  #     freetype
+  #     gdk-pixbuf
+  #     glib
+  #     gtk3
+  #     libdrm
+  #     libglvnd
+  #     libnotify
+  #     libpulseaudio
+  #     libuuid
+  #     libxkbcommon
+  #     mesa
+  #     nspr
+  #     nss
+  #     pango
+  #     stdenv.cc.cc
+  #     systemd
+  #     xorg.libX11
+  #     xorg.libXScrnSaver
+  #     xorg.libXcomposite
+  #     xorg.libXcursor
+  #     xorg.libXdamage
+  #     xorg.libXext
+  #     xorg.libXfixes
+  #     xorg.libXi
+  #     xorg.libXrandr
+  #     xorg.libXrender
+  #     xorg.libXtst
+  #     xorg.libxcb
+  #   ];
+  # };
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
@@ -113,19 +102,6 @@
     type = "fcitx5";
     enable = true;
     fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons ];
-  };
-
-  fonts = {
-    packages = with pkgs; [
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-    ];
-
-    fontconfig.defaultFonts = {
-      sansSerif = [ "Noto Sans CJK SC" "Noto Sans" ];
-      serif = [ "Noto Serif CJK SC" "Noto Serif" ];
-      monospace = [ "Noto Sans Mono CJK SC" "Noto Sans Mono" ];
-    };
   };
 
   time.timeZone = "Asia/Shanghai";
@@ -225,6 +201,11 @@
     };
   };
 
+  programs.clash-verge = {
+    enable = true;
+    serviceMode = true;
+  };
+
   environment.systemPackages = with pkgs; [
     # Version control
     git
@@ -263,8 +244,8 @@
     home-manager
     nodejs_22
     vscode
-    clash-verge-rev
     qq
+    helix
   ];
 
   users.users.cloudygirl = {
