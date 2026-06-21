@@ -70,6 +70,8 @@ in
   services.displayManager.sddm = {
     enable = true;
     extraPackages = with pkgs.kdePackages; [
+      qtmultimedia
+      qtsvg
       qtvirtualkeyboard
     ];
     theme = "sddm-astronaut-theme";
