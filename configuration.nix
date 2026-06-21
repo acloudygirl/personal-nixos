@@ -11,6 +11,12 @@
     ACTION=="add|change", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", ATTR{brightness}="3"
   '';
 
+  #开启Xwayland
+  programs.xwayland.enable = true;
+  environment.variables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
   systemd.services.keyboard-backlight-on = {
     description = "Keep keyboard backlight on";
     wantedBy = [ "multi-user.target" ];
@@ -24,13 +30,6 @@
     '';
   };
 
-  security.wrappers.clash-verge = {
-    source = lib.getExe pkgs.clash-verge-rev;
-    capabilities = "cap_net_admin,cap_net_bind_service+ep";
-    owner = "root";
-    group = "root";
-  };
-
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     substituters = [
@@ -42,49 +41,6 @@
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
   };
-
-  # programs.nix-ld = {
-  #   enable = true;
-  #   libraries = with pkgs; [
-  #     alsa-lib
-  #     at-spi2-atk
-  #     at-spi2-core
-  #     atk
-  #     cairo
-  #     cups
-  #     dbus
-  #     expat
-  #     fontconfig
-  #     freetype
-  #     gdk-pixbuf
-  #     glib
-  #     gtk3
-  #     libdrm
-  #     libglvnd
-  #     libnotify
-  #     libpulseaudio
-  #     libuuid
-  #     libxkbcommon
-  #     mesa
-  #     nspr
-  #     nss
-  #     pango
-  #     stdenv.cc.cc
-  #     systemd
-  #     xorg.libX11
-  #     xorg.libXScrnSaver
-  #     xorg.libXcomposite
-  #     xorg.libXcursor
-  #     xorg.libXdamage
-  #     xorg.libXext
-  #     xorg.libXfixes
-  #     xorg.libXi
-  #     xorg.libXrandr
-  #     xorg.libXrender
-  #     xorg.libXtst
-  #     xorg.libxcb
-  #   ];
-  # };
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
@@ -181,7 +137,10 @@
   programs.niri.enable = true;
   
 
-  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    theme = "sugar-dark";
+  };
  
 
   services.xserver.videoDrivers = [ "modesetting" ];
@@ -201,14 +160,12 @@
     };
   };
 
-  programs.clash-verge = {
-    enable = true;
-    serviceMode = true;
-  };
-
   environment.systemPackages = with pkgs; [
     # Version control
     git
+    fastfetch
+    v2rayn
+    sddm-sugar-dark
 
     # Python
     python3

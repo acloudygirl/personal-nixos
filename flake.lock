@@ -1,5 +1,17 @@
 {
   "nodes": {
+    "home-config": {
+      "locked": {
+        "lastModified": 1782056626,
+        "narHash": "sha256-lUUoOdMUGpxQFRYenLtvgE37cB69oO0mgYAxYN4SJyg=",
+        "path": "/home/cloudygirl/home-config",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/cloudygirl/home-config",
+        "type": "path"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -7,11 +19,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781906751,
-        "narHash": "sha256-6Ld1PqmptFtFKblE+SynhRgyBApUWcmrISetWqWHeeo=",
+        "lastModified": 1781989573,
+        "narHash": "sha256-npfH7Zv7t1akX/ArqCNro4zU4ViPlghLaPnbEfHbCxk=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "37f21dfa5d27e71b75bacd9418b156f9265e312e",
+        "rev": "78e7d8b13ecd7f5256a5c11ce216876164099d9f",
         "type": "github"
       },
       "original": {
@@ -22,12 +34,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1781577229,
-        "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "567a49d1913ce81ac6e9582e3553dd90a955875f",
-        "type": "github"
+        "lastModified": 1781647588,
+        "narHash": "sha256-rcUHdUtJEvMdNEl2Wq+YpHraHKfcer3KsBscpZEF2Yg=",
+        "type": "tarball",
+        "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-unstable/nixexprs.tar.xz"
       },
       "original": {
         "owner": "NixOS",
@@ -38,6 +48,7 @@
     },
     "root": {
       "inputs": {
+        "home-config": "home-config",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }

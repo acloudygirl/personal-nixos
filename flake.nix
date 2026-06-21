@@ -7,9 +7,11 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    home-config.url = "path:/home/cloudygirl/home-config";
+
   };
 
-  outputs = { self, nixpkgs,home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, home-config, ... }:
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -17,7 +19,7 @@
           home-manager.nixosModules.home-manager
           ./configuration.nix
           ./fonts.nix
-          ./home/home.nix
+          home-config.nixosModules.default
         ];
       };
     };
