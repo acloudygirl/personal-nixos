@@ -1,7 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ./sddm-theme.nix
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -137,12 +140,6 @@
   programs.niri.enable = true;
   
 
-  services.displayManager.sddm = {
-    enable = true;
-    theme = "sugar-dark";
-  };
- 
-
   services.xserver.videoDrivers = [ "modesetting" ];
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
@@ -165,7 +162,6 @@
     git
     fastfetch
     v2rayn
-    sddm-sugar-dark
 
     # Python
     python3
