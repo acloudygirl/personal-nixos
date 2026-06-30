@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-    ./sddm-theme.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -140,6 +137,9 @@
   programs.niri.enable = true;
   
 
+  services.displayManager.sddm.enable = true;
+ 
+
   services.xserver.videoDrivers = [ "modesetting" ];
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
@@ -199,6 +199,7 @@
     vscode
     qq
     helix
+    marktext
   ];
 
   users.users.cloudygirl = {
@@ -206,6 +207,6 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
   # services.displayManager.ly.enable = true;
 }

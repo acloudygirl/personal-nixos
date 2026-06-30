@@ -6,58 +6,64 @@ let
   animeSddmTheme = (pkgs.sddm-astronaut.override {
     embeddedTheme = "japanese_aesthetic";
     themeConfig = {
-      Font = "electroharmonix";
-      FontSize = "11";
-      RoundCorners = "26";
+      # ======================
+      # 字体
+      # ======================
+      Font = "Noto Sans";
+      FontSize = "10";
+
+      # ======================
+      # ❌ 完全无遮罩关键
+      # ======================
+      DimBackground = "0";
+
+      PartialBlur = "false";
+      Blur = "0";
+      BlurMax = "0";
+
+      # ======================
+      # ❌ 移除 login 卡片
+      # ======================
+      HaveFormBackground = "false";
+      FormBackgroundColor = "#00000000";
+
+      # ======================
+      # 背景
+      # ======================
       Background = "Backgrounds/login-bg.jpg";
-      BackgroundPlaceholder = "";
-      BackgroundSpeed = "";
+
       CropBackground = "true";
-      DimBackground = "0.12";
 
-      FormPosition = "left";
-      HaveFormBackground = "true";
-      PartialBlur = "true";
-      BlurMax = "32";
-      Blur = "2.4";
+      # ======================
+      # ✔ 输入框完全浮动
+      # ======================
+      LoginFieldBackgroundColor = "#FFFFFF10";
+      PasswordFieldBackgroundColor = "#FFFFFF10";
 
-      FormBackgroundColor = "#17172d";
-      BackgroundColor = "#11111f";
-      DimBackgroundColor = "#050512";
-      LoginFieldBackgroundColor = "#0d1024";
-      PasswordFieldBackgroundColor = "#0d1024";
-
-      HeaderTextColor = "#c7e6ff";
-      DateTextColor = "#c7e6ff";
-      TimeTextColor = "#c7e6ff";
       LoginFieldTextColor = "#dff6ff";
       PasswordFieldTextColor = "#dff6ff";
-      PlaceholderTextColor = "#9db5d6";
-      UserIconColor = "#9bdcff";
-      PasswordIconColor = "#ffb7e8";
-      LoginButtonTextColor = "#080816";
-      LoginButtonBackgroundColor = "#9bdcff";
-      WarningColor = "#ffb7e8";
-      HighlightBorderColor = "#ffb7e8";
-      DropdownBackgroundColor = "#17172d";
-      DropdownSelectedBackgroundColor = "#9bdcff";
-      DropdownTextColor = "#dff6ff";
-      HighlightBackgroundColor = "#ffb7e8";
-      HighlightTextColor = "#080816";
-      HoverUserIconColor = "#ffffff";
-      HoverPasswordIconColor = "#ffffff";
-      SessionButtonTextColor = "#c7e6ff";
-      SystemButtonsIconsColor = "#c7e6ff";
-      HoverSessionButtonTextColor = "#ffffff";
-      HoverSystemButtonsIconsColor = "#ffffff";
 
-      HideSystemButtons = "false";
-      HideLoginButton = "false";
-      HideVirtualKeyboard = "true";
+      PlaceholderTextColor = "#9db5d6";
+
+      # ======================
+      # UI 布局
+      # ======================
+      FormPosition = "center";
+
+      # ======================
+      # 时间（视觉中心点）
+      # ======================
+      TimeTextSize = "26";
+      DateTextSize = "12";
+      TimeTextColor = "#c7e6ff";
+
+      # ======================
+      # 行为
+      # ======================
       ForceLastUser = "true";
       PasswordFocus = "true";
-      TranslateLogin = "UNLOCK";
-      TranslatePlaceholderPassword = "PASSWORD";
+
+      HideVirtualKeyboard = "true";
     };
   }).overrideAttrs (oldAttrs: {
     installPhase = oldAttrs.installPhase + ''
@@ -65,15 +71,18 @@ let
       cp ${loginBackground} $out/share/sddm/themes/sddm-astronaut-theme/Backgrounds/login-bg.jpg
     '';
   });
+
 in
 {
   services.displayManager.sddm = {
     enable = true;
+
     extraPackages = with pkgs.kdePackages; [
       qtmultimedia
       qtsvg
       qtvirtualkeyboard
     ];
+
     theme = "sddm-astronaut-theme";
   };
 
