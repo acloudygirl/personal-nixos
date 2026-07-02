@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Markdown -> PDF shortcut. After switching, use:
-  #   mdpdf note.md [output.pdf]
+  # Markdown 转 PDF
+  # .md文件转化为.pdf命令缩减：mdpdf note.md [output.pdf]
   mdpdf = pkgs.writeShellScriptBin "mdpdf" ''
     set -euo pipefail
 
@@ -29,31 +29,30 @@ let
 in
 
 {
-  # Imported modules: hardware scan, login theme, fonts and Home Manager are
-  # wired from flake.nix; this file keeps machine-level options.
+  # 导入模块：硬件扫描、登录主题；字体和 Home Manager 在 flake.nix 中接入
+  # 这个文件保留机器级选项
   imports = [
     ./hardware-configuration.nix
     ./sddm-theme.nix
   ];
 
-  # Nixpkgs policy: needed for packages such as Chrome, VS Code and QQ.
+  # Chrome, VS Code and QQ必要权限
   nixpkgs.config.allowUnfree = true;
 
-  # Kernel and low-level device tweaks.
+  # 内核和底层设备调整
   boot.kernelParams = [ "nouveau.modeset=0" ];
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", ATTR{brightness}="3"
   '';
 
-  # Wayland compatibility: enable Xwayland and prefer native Wayland backends
-  # for Electron/Chromium-style applications.
+  # Wayland 兼容性：启用 Xwayland，并让 Electron/Chromium 类应用优先使用原生 Wayland 后端
   programs.xwayland.enable = true;
   environment.variables = {
     NIXOS_OZONE_WL = "1";
   };
 
-  # ASUS keyboard backlight: force it on at boot and when the LED device appears.
+  # 华硕键盘背光：启动时以及 LED 设备出现时强制打开
   systemd.services.keyboard-backlight-on = {
     description = "Keep keyboard backlight on";
     wantedBy = [ "multi-user.target" ];
@@ -67,7 +66,7 @@ in
     '';
   };
 
-  # Nix command behavior and binary caches.
+  # Nix 命令行为和二进制缓存，使用南大，科大，官方作为源地址
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     substituters = [
@@ -80,7 +79,7 @@ in
     ];
   };
 
-  # Boot loader: GRUB in EFI mode, with OS probing for other installed systems.
+  # 引导加载器：EFI 模式下的 GRUB，并探测其它已安装系统
   boot.loader = {
     efi.canTouchEfiVariables = true;
     grub = {
@@ -91,7 +90,7 @@ in
     };
   };
 
-  # Locale and input method.
+  # 区域设置和输入法
   i18n.defaultLocale = "zh_CN.UTF-8";
 
   i18n.inputMethod = {
@@ -100,19 +99,19 @@ in
     fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons ];
   };
 
-  # Time, hostname and network applet.
+  # 时间、主机名和网络托盘程序
   time.timeZone = "Asia/Shanghai";
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   programs.nm-applet.enable = true;
 
-  # Bluetooth support.
+  # 蓝牙
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
 
-  # Power policy: prefer quiet/low-power behavior.
+  # 电源方案
   powerManagement = {
     enable = true;
     cpuFreqGovernor = "powersave";
@@ -120,7 +119,7 @@ in
 
   services.power-profiles-daemon.enable = false;
 
-  # TLP battery and thermal tuning.
+  # TLP 电池和温控调校
   services.tlp = {
     enable = true;
     settings = {
@@ -149,7 +148,7 @@ in
     };
   };
 
-  # Extra battery-mode CPU throttling for a quiet profile.
+  # 不插电时触发安静配置，会有额外电池模式 CPU 限速
   systemd.services.quiet-cpu-profile = {
     description = "Keep CPU in a quiet low-power profile";
     wantedBy = [ "multi-user.target" ];
@@ -177,8 +176,8 @@ in
     '';
   };
 
-  # Desktop stack: Plasma is available, Niri is enabled, SDDM is the display
-  # manager. The detailed SDDM theme lives in sddm-theme.nix.
+  # 桌面栈：Plasma 作为应急备用桌面，Niri为主桌面，SDDM 是显示管理器，掌管登录界面
+  # SDDM 主题细节放在 sddm-theme.nix。
   services.xserver.enable = true;
   services.desktopManager.plasma6.enable = true;
   programs.niri.enable = true;
@@ -187,7 +186,7 @@ in
 
   services.xserver.videoDrivers = [ "modesetting" ];
 
-  # Flatpak support and automatic Flathub remote setup.
+  # Flatpak 支持和 Flathub 远程仓库自动配置。
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub remote for Flatpak";
@@ -204,13 +203,15 @@ in
     };
   };
 
-  # System-wide command line tools, desktop apps and development toolchains.
+  # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
-    # Version control
+    # 版本控制
     git
     gnumake
+    # md-pdf转换命令
     mdpdf
     fastfetch
+    #梯子
     v2rayn
     sing-box
 
@@ -220,7 +221,7 @@ in
     ruff
     pyright
 
-    # C and C++
+    # C 和 C++
     gcc
     clang
     clang-tools
@@ -236,12 +237,12 @@ in
     rustfmt
     clippy
 
-    # Bluetooth tools
+    # 蓝牙工具
     bluez
     bluez-tools
     kdePackages.bluedevil
 
-    # Desktop applications
+    # 桌面应用
     kdePackages.konsole
     kdePackages.dolphin
     kdePackages.polkit-kde-agent-1
@@ -251,11 +252,15 @@ in
     nodejs_22
     vscode
     qq
-    helix
-    marktext # Markdown reader
-    sioyek # PDF reader
-    pandoc # Markdown -> PDF
-    texliveFull
+    helix #.nix文件编辑器，nano替代
+    kdePackages.gwenview # 图片查看器
+    haruna # 视频播放器
+    kdePackages.elisa # 音乐播放器
+    marktext # Markdown 阅读器
+    sioyek # PDF 阅读器
+    pandoc # Markdown 转 PDF
+    texliveFull #md转pdf渲染库
+
     #压缩软件
     kdePackages.ark
     p7zip
@@ -264,8 +269,8 @@ in
     unrar
   ];
 
-  # Allow sing-box to create network interfaces and bind privileged ports without
-  # running the whole application as root.
+  # 允许 sing-box 创建网络接口并绑定特权端口，启用TUN
+  # 不需要让整个应用以 root 身份运行
   security.wrappers.sing-box = {
     owner = "root";
     group = "root";
@@ -273,21 +278,21 @@ in
     source = "${pkgs.sing-box}/bin/sing-box";
   };
 
-  # v2rayN expects the sing-box core at this user-writable path. Link it to the
-  # capability-enabled wrapper from security.wrappers above.
+  # v2rayN 需要在这个用户可写路径找到 sing-box 核心
+  # 将它链接到上面 security.wrappers 生成的带能力包装器
   system.activationScripts.v2rayn-sing-box-core.text = ''
     ${pkgs.coreutils}/bin/install -d -o cloudygirl -g users -m 0755 /home/cloudygirl/.local/share/v2rayN/bin/sing_box
     ${pkgs.coreutils}/bin/ln -sfn /run/wrappers/bin/sing-box /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
     ${pkgs.coreutils}/bin/chown -h cloudygirl:users /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
   '';
 
-  # Main local user.
+  # 主要本地用户
   users.users.cloudygirl = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-  # NixOS release compatibility level. Do not change casually.
+  # NixOS 版本兼容级别
   system.stateVersion = "26.11";
 
   # services.displayManager.ly.enable = true;
