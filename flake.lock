@@ -2,8 +2,8 @@
   "nodes": {
     "home-config": {
       "locked": {
-        "lastModified": 1782056626,
-        "narHash": "sha256-lUUoOdMUGpxQFRYenLtvgE37cB69oO0mgYAxYN4SJyg=",
+        "lastModified": 1782060283,
+        "narHash": "sha256-XmiPPOHHuA+8KHgSm7Zi6x2LGRFclHlFch1LQV8mnIk=",
         "path": "/home/cloudygirl/home-config",
         "type": "path"
       },

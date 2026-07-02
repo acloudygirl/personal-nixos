@@ -1,7 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ./sddm-theme.nix
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -162,6 +165,7 @@
     git
     fastfetch
     v2rayn
+    sing-box
 
     # Python
     python3
@@ -199,8 +203,24 @@
     vscode
     qq
     helix
-    marktext
+    marktext #markdown reader
+    sioyek #pdf reader
+    pandoc #.md->pdf
+    texliveFull
   ];
+
+  security.wrappers.sing-box = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_net_admin,cap_net_bind_service+ep";
+    source = "${pkgs.sing-box}/bin/sing-box";
+  };
+
+  system.activationScripts.v2rayn-sing-box-core.text = ''
+    ${pkgs.coreutils}/bin/install -d -o cloudygirl -g users -m 0755 /home/cloudygirl/.local/share/v2rayN/bin/sing_box
+    ${pkgs.coreutils}/bin/ln -sfn /run/wrappers/bin/sing-box /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
+    ${pkgs.coreutils}/bin/chown -h cloudygirl:users /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
+  '';
 
   users.users.cloudygirl = {
     isNormalUser = true;
