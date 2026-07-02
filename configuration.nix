@@ -1,25 +1,59 @@
 { config, lib, pkgs, ... }:
 
+let
+  # Markdown -> PDF shortcut. After switching, use:
+  #   mdpdf note.md [output.pdf]
+  mdpdf = pkgs.writeShellScriptBin "mdpdf" ''
+    set -euo pipefail
+
+    if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+      echo "Usage: mdpdf INPUT.md [OUTPUT.pdf]" >&2
+      exit 2
+    fi
+
+    input="$(${pkgs.coreutils}/bin/realpath "$1")"
+    if [ "$#" -eq 2 ]; then
+      output="$(${pkgs.coreutils}/bin/realpath -m "$2")"
+    else
+      output="''${input%.*}.pdf"
+    fi
+
+    workdir="$(${pkgs.coreutils}/bin/dirname "$input")"
+    filename="$(${pkgs.coreutils}/bin/basename "$input")"
+
+    cd "$workdir"
+    exec ${pkgs.pandoc}/bin/pandoc "$filename" \
+      -d ${./notes/template/pandoc.yaml} \
+      -o "$output"
+  '';
+in
+
 {
+  # Imported modules: hardware scan, login theme, fonts and Home Manager are
+  # wired from flake.nix; this file keeps machine-level options.
   imports = [
     ./hardware-configuration.nix
     ./sddm-theme.nix
   ];
 
+  # Nixpkgs policy: needed for packages such as Chrome, VS Code and QQ.
   nixpkgs.config.allowUnfree = true;
 
+  # Kernel and low-level device tweaks.
   boot.kernelParams = [ "nouveau.modeset=0" ];
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", ATTR{brightness}="3"
   '';
 
-  #开启Xwayland
+  # Wayland compatibility: enable Xwayland and prefer native Wayland backends
+  # for Electron/Chromium-style applications.
   programs.xwayland.enable = true;
   environment.variables = {
     NIXOS_OZONE_WL = "1";
   };
 
+  # ASUS keyboard backlight: force it on at boot and when the LED device appears.
   systemd.services.keyboard-backlight-on = {
     description = "Keep keyboard backlight on";
     wantedBy = [ "multi-user.target" ];
@@ -33,6 +67,7 @@
     '';
   };
 
+  # Nix command behavior and binary caches.
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     substituters = [
@@ -45,6 +80,7 @@
     ];
   };
 
+  # Boot loader: GRUB in EFI mode, with OS probing for other installed systems.
   boot.loader = {
     efi.canTouchEfiVariables = true;
     grub = {
@@ -55,6 +91,7 @@
     };
   };
 
+  # Locale and input method.
   i18n.defaultLocale = "zh_CN.UTF-8";
 
   i18n.inputMethod = {
@@ -63,16 +100,19 @@
     fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons ];
   };
 
+  # Time, hostname and network applet.
   time.timeZone = "Asia/Shanghai";
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   programs.nm-applet.enable = true;
 
+  # Bluetooth support.
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
 
+  # Power policy: prefer quiet/low-power behavior.
   powerManagement = {
     enable = true;
     cpuFreqGovernor = "powersave";
@@ -80,6 +120,7 @@
 
   services.power-profiles-daemon.enable = false;
 
+  # TLP battery and thermal tuning.
   services.tlp = {
     enable = true;
     settings = {
@@ -108,6 +149,7 @@
     };
   };
 
+  # Extra battery-mode CPU throttling for a quiet profile.
   systemd.services.quiet-cpu-profile = {
     description = "Keep CPU in a quiet low-power profile";
     wantedBy = [ "multi-user.target" ];
@@ -135,15 +177,17 @@
     '';
   };
 
+  # Desktop stack: Plasma is available, Niri is enabled, SDDM is the display
+  # manager. The detailed SDDM theme lives in sddm-theme.nix.
   services.xserver.enable = true;
   services.desktopManager.plasma6.enable = true;
   programs.niri.enable = true;
-  
 
   services.displayManager.sddm.enable = true;
- 
 
   services.xserver.videoDrivers = [ "modesetting" ];
+
+  # Flatpak support and automatic Flathub remote setup.
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub remote for Flatpak";
@@ -160,10 +204,12 @@
     };
   };
 
+  # System-wide command line tools, desktop apps and development toolchains.
   environment.systemPackages = with pkgs; [
     # Version control
     git
     gnumake
+    mdpdf
     fastfetch
     v2rayn
     sing-box
@@ -190,10 +236,12 @@
     rustfmt
     clippy
 
+    # Bluetooth tools
     bluez
     bluez-tools
     kdePackages.bluedevil
 
+    # Desktop applications
     kdePackages.konsole
     kdePackages.dolphin
     kdePackages.polkit-kde-agent-1
@@ -204,12 +252,14 @@
     vscode
     qq
     helix
-    marktext #markdown reader
-    sioyek #pdf reader
-    pandoc #.md->pdf
+    marktext # Markdown reader
+    sioyek # PDF reader
+    pandoc # Markdown -> PDF
     texliveFull
   ];
 
+  # Allow sing-box to create network interfaces and bind privileged ports without
+  # running the whole application as root.
   security.wrappers.sing-box = {
     owner = "root";
     group = "root";
@@ -217,17 +267,22 @@
     source = "${pkgs.sing-box}/bin/sing-box";
   };
 
+  # v2rayN expects the sing-box core at this user-writable path. Link it to the
+  # capability-enabled wrapper from security.wrappers above.
   system.activationScripts.v2rayn-sing-box-core.text = ''
     ${pkgs.coreutils}/bin/install -d -o cloudygirl -g users -m 0755 /home/cloudygirl/.local/share/v2rayN/bin/sing_box
     ${pkgs.coreutils}/bin/ln -sfn /run/wrappers/bin/sing-box /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
     ${pkgs.coreutils}/bin/chown -h cloudygirl:users /home/cloudygirl/.local/share/v2rayN/bin/sing_box/sing-box
   '';
 
+  # Main local user.
   users.users.cloudygirl = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+  # NixOS release compatibility level. Do not change casually.
   system.stateVersion = "26.11";
+
   # services.displayManager.ly.enable = true;
 }
