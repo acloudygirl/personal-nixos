@@ -163,6 +163,7 @@
   environment.systemPackages = with pkgs; [
     # Version control
     git
+    gnumake
     fastfetch
     v2rayn
     sing-box

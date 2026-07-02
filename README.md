@@ -25,6 +25,7 @@ sudo nixos-rebuild switch --flake /home/cloudygirl/nixos#nixos
 - `sddm-theme.nix`：SDDM 登录界面主题、登录背景、主题依赖和主题包配置。
 - `software/default.nix`：用户软件和 Home Manager 配置入口。
 - `software/default.nix` 里的 `xdg.mimeApps`：默认打开方式配置，例如 `.nix`/文本用 VS Code，`.md` 用 MarkText，`.pdf` 用 Sioyek。
+- `notes/`：Pandoc + XeLaTeX 中文 PDF 笔记模板。
 
 ## 资源和软件配置
 

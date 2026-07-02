@@ -1,0 +1,41 @@
+from: markdown+tex_math_dollars+yaml_metadata_block+pipe_tables+strikeout+task_lists
+to: pdf
+pdf-engine: xelatex
+
+toc: true
+toc-depth: 3
+number-sections: true
+
+highlight-style: tango
+
+resource-path:
+  - .
+  - assets
+
+variables:
+  lang: zh-CN
+  papersize: a4
+  documentclass: ctexart
+  classoption:
+    - fontset=fandol
+  fontsize: 11pt
+  geometry:
+    - a4paper
+    - margin=2cm
+  monofont: JetBrainsMono Nerd Font
+  colorlinks: true
+  linkcolor: blue
+  urlcolor: blue
+  citecolor: blue
+  header-includes:
+    - \usepackage{booktabs}
+    - \usepackage{longtable}
+    - \usepackage{graphicx}
+    - \usepackage{float}
+    - \usepackage{listings}
+    - \usepackage{fvextra}
+    - \usepackage{xcolor}
+    - \usepackage[normalem]{ulem}
+    - \renewcommand{\st}[1]{\sout{#1}}
+    - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere=true,commandchars=\\\{\}}
+    - \floatplacement{figure}{H}

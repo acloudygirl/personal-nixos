@@ -8,6 +8,7 @@
 
     packages = with pkgs; [
       nerd-fonts.liberation
+      nerd-fonts.jetbrains-mono
       maple-mono.NF-CN-unhinted
       noto-fonts
       noto-fonts-cjk-sans
