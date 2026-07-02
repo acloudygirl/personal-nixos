@@ -1,0 +1,234 @@
+spawn-at-startup "fcitx5"
+spawn-at-startup "/run/current-system/sw/libexec/polkit-kde-authentication-agent-1"
+spawn-at-startup "chrome"
+spawn-at-startup "kitty"
+spawn-at-startup "v2rayN"
+spawn-at-startup "noctalia-shell"
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+}
+
+xwayland-satellite {
+    path "/etc/profiles/per-user/cloudygirl/bin/xwayland-satellite"
+}
+
+cursor {
+    xcursor-size 24
+    hide-when-typing
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+blur {
+    passes 3
+    offset 3.0
+    noise 0.02
+    saturation 1.5
+}
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+    focus-follows-mouse
+    workspace-auto-back-and-forth
+    mod-key "Super"
+    mod-key-nested "Super"
+}
+
+gestures {
+
+    dnd-edge-view-scroll {
+        trigger-width 30
+        delay-ms 100
+        max-speed 1500
+    }
+
+    dnd-edge-workspace-switch {
+        trigger-height 50
+        delay-ms 100
+        max-speed 1500
+    }
+}
+
+overview {
+    zoom 0.5
+    backdrop-color "#1a1a1a"
+
+    workspace-shadow {
+        softness 40
+        spread 10
+        offset x=0 y=10
+        color "#00000050"
+    }
+}
+
+layout {
+    gaps 3
+    center-focused-column "never"
+    background-color "#111111"
+
+    default-column-width { proportion 0.49; }
+
+	preset-column-widths {
+		proportion 0.33
+		proportion 0.49
+		proportion 0.65
+		proportion 0.98
+	}
+
+    focus-ring {
+        off
+    }
+
+    border {
+        width 2
+        active-gradient from="#ddaa77ee" to="#eebb99ee" angle=45 relative-to="workspace-view"
+        inactive-color "#595959aa"
+    }
+
+    shadow {
+        on
+        softness 12
+        spread 2
+        offset x=0 y=4
+        draw-behind-window true
+        color "#1a1a1aee"
+        inactive-color "#1a1a1aaa"
+    }
+
+    insert-hint {
+        color "#ddaa7780"
+    }
+
+    tab-indicator {
+        on
+    }
+}
+
+animations {
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    window-open {
+        duration-ms 140
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 120
+        curve "linear"
+    }
+
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    window-movement {
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    window-resize {
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    screenshot-ui-open {
+        duration-ms 180
+        curve "ease-out-quad"
+    }
+
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+}
+
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+    draw-border-with-background false
+}
+
+binds {
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+
+    Ctrl+Alt+T { spawn "kitty"; }
+    Mod+E { spawn "dolphin" "/home/cloudygirl"; }
+    Mod+B { spawn "google-chrome"; }
+    Mod+F { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+
+    Print { screenshot show-pointer=false; }
+    Ctrl+Alt+A { spawn-sh "grim -g \"$(slurp)\" -t png - | wl-copy -t image/png"; }
+
+    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+
+    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "-e4" "-n2" "set" "5%-"; }
+
+    Mod+Q hotkey-overlay-title=null { close-window; }
+    Alt+F4 hotkey-overlay-title=null { close-window; }
+    Mod+Delete allow-inhibiting=false { quit; }
+    Mod+Shift+F { toggle-window-floating; }
+    Mod+G { toggle-column-tabbed-display; }
+    Shift+F11 { fullscreen-window; }
+    Mod+M { maximize-column; }
+    Mod+C { center-column; }
+
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up { focus-window-up; }
+    Mod+Down { focus-window-down; }
+    Mod+Tab { focus-workspace-previous; }
+
+	Mod+R { switch-preset-column-width; }
+
+	Mod+Shift+Left { move-column-left; }
+	Mod+Shift+Right { move-column-right; }
+	Mod+Shift+Up { move-window-to-workspace-up; }
+	Mod+Shift+Down { move-window-to-workspace-down; }
+
+	Mod+Shift+N { move-window-to-workspace 255; }
+
+	Mod+1 { focus-workspace 1; }
+	Mod+Shift+1 { move-column-to-workspace 1; }
+	Mod+2 { focus-workspace 2; }
+	Mod+Shift+2 { move-column-to-workspace 2; }
+	Mod+3 { focus-workspace 3; }
+	Mod+Shift+3 { move-column-to-workspace 3; }
+	Mod+4 { focus-workspace 4; }
+	Mod+Shift+4 { move-column-to-workspace 4; }
+	Mod+5 { focus-workspace 5; }
+	Mod+Shift+5 { move-column-to-workspace 5; }
+	Mod+6 { focus-workspace 6; }
+	Mod+Shift+6 { move-column-to-workspace 6; }
+	Mod+7 { focus-workspace 7; }
+	Mod+Shift+7 { move-column-to-workspace 7; }
+	Mod+8 { focus-workspace 8; }
+	Mod+Shift+8 { move-column-to-workspace 8; }
+	Mod+9 { focus-workspace 9; }
+	Mod+Shift+9 { move-column-to-workspace 9; }
+}

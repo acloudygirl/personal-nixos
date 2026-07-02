@@ -1,0 +1,9 @@
+[Libinput][10248][262][ASUF1205:00 2808:0106 Touchpad]
+NaturalScroll=false
+ScrollFactor=0.3
+
+[Libinput][7847][102][2.4G Mouse]
+NaturalScroll=false
+
+[Mouse]
+cursorTheme=Win10OS-cursors

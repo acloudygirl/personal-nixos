@@ -1,17 +1,5 @@
 {
   "nodes": {
-    "home-config": {
-      "locked": {
-        "lastModified": 1782060283,
-        "narHash": "sha256-XmiPPOHHuA+8KHgSm7Zi6x2LGRFclHlFch1LQV8mnIk=",
-        "path": "/home/cloudygirl/home-config",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/cloudygirl/home-config",
-        "type": "path"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -48,7 +36,6 @@
     },
     "root": {
       "inputs": {
-        "home-config": "home-config",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }
