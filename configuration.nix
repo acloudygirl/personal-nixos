@@ -256,6 +256,12 @@ in
     sioyek # PDF reader
     pandoc # Markdown -> PDF
     texliveFull
+    #压缩软件
+    kdePackages.ark
+    p7zip
+    unzip
+    zip
+    unrar
   ];
 
   # Allow sing-box to create network interfaces and bind privileged ports without
