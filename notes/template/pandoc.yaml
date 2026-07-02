@@ -36,6 +36,6 @@ variables:
     - \usepackage{fvextra}
     - \usepackage{xcolor}
     - \usepackage[normalem]{ulem}
-    - \renewcommand{\st}[1]{\sout{#1}}
+    - \let\st\sout
     - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere=true,commandchars=\\\{\}}
     - \floatplacement{figure}{H}
