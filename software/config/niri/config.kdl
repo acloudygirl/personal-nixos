@@ -1,5 +1,6 @@
 spawn-at-startup "fcitx5"
-spawn-at-startup "/run/current-system/sw/libexec/polkit-kde-authentication-agent-1"
+spawn-at-startup "systemctl" "--user" "import-environment" "DISPLAY" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "NIRI_SOCKET"
+spawn-at-startup "systemctl" "--user" "start" "polkit-kde-agent.service"
 spawn-at-startup "chrome"
 spawn-at-startup "kitty"
 spawn-at-startup "v2rayN"

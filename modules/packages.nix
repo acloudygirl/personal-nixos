@@ -68,6 +68,9 @@ in
     thunar-volman
     gvfs
 
+    #软件提权工具
+    lxqt.lxqt-policykit
+
     # 蓝牙工具
     bluez
     bluez-tools
@@ -82,6 +85,7 @@ in
     nodejs_22
     vscode
     qq
+    wpsoffice-cn
     helix #.nix文件编辑器，nano替代
     kdePackages.gwenview # 图片查看器
     haruna # 视频播放器

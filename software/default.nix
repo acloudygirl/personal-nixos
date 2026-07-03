@@ -214,6 +214,19 @@ in
         kitty
       ];
 
+      systemd.user.services.polkit-kde-agent = {
+        Unit = {
+          Description = "KDE PolicyKit Authentication Agent";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "graphical-session.target" ];
+      };
+
       xdg.configFile."niri/config.kdl".source = ./config/niri/config.kdl;
       xdg.configFile."Thunar/uca.xml".text = ''
         <?xml version="1.0" encoding="UTF-8"?>
@@ -225,6 +238,18 @@ in
           <unique-id>1783058739735464-1</unique-id>
           <command>${pkgs.kitty}/bin/kitty --working-directory %f</command>
           <description>Open kitty in this directory</description>
+          <range></range>
+          <patterns>*</patterns>
+          <startup-notify/>
+          <directories/>
+        </action>
+        <action>
+          <icon>system-file-manager</icon>
+          <name>Open as Administrator</name>
+          <submenu></submenu>
+          <unique-id>1783067653000000-1</unique-id>
+          <command>${pkgs.thunar}/bin/thunar admin://%f</command>
+          <description>Open this directory with administrator permissions</description>
           <range></range>
           <patterns>*</patterns>
           <startup-notify/>
