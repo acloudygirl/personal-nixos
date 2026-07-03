@@ -215,6 +215,23 @@ in
       ];
 
       xdg.configFile."niri/config.kdl".source = ./config/niri/config.kdl;
+      xdg.configFile."Thunar/uca.xml".text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <actions>
+        <action>
+          <icon>utilities-terminal</icon>
+          <name>Open Terminal Here</name>
+          <submenu></submenu>
+          <unique-id>1783058739735464-1</unique-id>
+          <command>${pkgs.kitty}/bin/kitty --working-directory %f</command>
+          <description>Open kitty in this directory</description>
+          <range></range>
+          <patterns>*</patterns>
+          <startup-notify/>
+          <directories/>
+        </action>
+        </actions>
+      '';
 
       xdg.mimeApps = {
         enable = true;

@@ -18,11 +18,21 @@ sudo nixos-rebuild switch --flake /home/cloudygirl/nixos#nixos
 
 - `flake.nix`：flake 入口，声明 `nixpkgs`、`home-manager` 输入，并组装 `nixosConfigurations.nixos`。
 - `flake.lock`：锁定输入版本，保证构建结果可复现。
-- `configuration.nix`：系统主配置，放启动器、网络、桌面环境、电源、系统包、用户等机器级设置。
+- `configuration.nix`：系统主入口，只保留模块导入和 `system.stateVersion`。
 - `hardware-configuration.nix`：硬件扫描生成的配置，主要是文件系统、启动设备、内核模块等。
 
 ## 独立模块
 
+- `modules/boot.nix`：GRUB/EFI 启动加载器配置。
+- `modules/desktop.nix`：Xwayland、Plasma、Niri、SDDM 启用项，以及 Flatpak/Flathub 配置。
+- `modules/hardware-tweaks.nix`：内核参数、华硕键盘背光、蓝牙等硬件相关调整。
+- `modules/locale.nix`：中文区域设置、时区和 Fcitx5 输入法。
+- `modules/networking.nix`：主机名、NetworkManager 和网络托盘。
+- `modules/nix-settings.nix`：Nix flakes、二进制缓存和 unfree 包策略。
+- `modules/packages.nix`：全系统命令行工具、桌面应用、开发工具链和 `mdpdf` 命令。
+- `modules/power.nix`：TLP、电源管理和安静 CPU 配置。
+- `modules/proxy-tools.nix`：sing-box 权限包装器和 v2rayN sing-box 核心链接。
+- `modules/users.nix`：本机用户配置。
 - `fonts.nix`：系统字体配置。
 - `sddm-theme.nix`：SDDM 登录界面主题、登录背景、主题依赖和主题包配置。
 - `software/default.nix`：用户软件和 Home Manager 配置入口。
