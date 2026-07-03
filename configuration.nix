@@ -236,6 +236,11 @@ in
     rust-analyzer
     rustfmt
     clippy
+    
+    # 文件管理器
+    thunar
+    thunar-volman
+    gvfs
 
     # 蓝牙工具
     bluez
@@ -243,8 +248,7 @@ in
     kdePackages.bluedevil
 
     # 桌面应用
-    kdePackages.konsole
-    kdePackages.dolphin
+    #kdePackages.konsole    #KED命令行 
     kdePackages.polkit-kde-agent-1
     firefox
     google-chrome

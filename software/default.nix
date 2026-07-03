@@ -5,7 +5,7 @@ let
 
   chrome = "google-chrome.desktop";
   code = "code.desktop";
-  dolphin = "org.kde.dolphin.desktop";
+  thunar = "thunar.desktop";
   gwenview = "org.kde.gwenview.desktop";
   ark = "org.kde.ark.desktop";
   haruna = "org.kde.haruna.desktop";
@@ -154,7 +154,7 @@ let
     "x-scheme-handler/tonsite" = telegram;
 
     # Files and directories
-    "inode/directory" = dolphin;
+    "inode/directory" = thunar;
 
     # Markdown
     "text/markdown" = marktext;
@@ -205,7 +205,7 @@ in
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    users.cloudygirl = _: {
+    users.cloudygirl = { config, ... }: {
       home.stateVersion = "26.05";
 
       home.packages = with pkgs; [
@@ -220,7 +220,7 @@ in
         enable = true;
         associations.added = mimeDefaults // {
           "inode/directory" = [
-            dolphin
+            thunar
             "org.kde.kate.desktop"
           ];
           "application/pdf" = [
@@ -249,6 +249,17 @@ in
         };
         defaultApplications = mimeDefaults;
       };
+
+      # Some desktops consult desktop-specific MIME files before the generic one.
+      # Keep those entries linked to Home Manager's generated mimeapps.list.
+      xdg.configFile."kde-mimeapps.list".source =
+        config.xdg.configFile."mimeapps.list".source;
+      xdg.configFile."niri-mimeapps.list".source =
+        config.xdg.configFile."mimeapps.list".source;
+      xdg.dataFile."applications/kde-mimeapps.list".source =
+        config.xdg.configFile."mimeapps.list".source;
+      xdg.dataFile."applications/niri-mimeapps.list".source =
+        config.xdg.configFile."mimeapps.list".source;
     };
 
     backupFileExtension = ".bak";

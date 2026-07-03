@@ -169,7 +169,7 @@ binds {
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
     Ctrl+Alt+T { spawn "kitty"; }
-    Mod+E { spawn "dolphin" "/home/cloudygirl"; }
+    Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "google-chrome"; }
     Mod+F { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
 
