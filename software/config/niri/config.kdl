@@ -173,6 +173,7 @@ binds {
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "google-chrome"; }
     Mod+F { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Mod+Escape { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
     Print { screenshot show-pointer=false; }
     Ctrl+Alt+A { spawn-sh "grim -g \"$(slurp)\" -t png - | wl-copy -t image/png"; }
