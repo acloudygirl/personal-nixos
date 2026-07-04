@@ -1,7 +1,3 @@
 [Proxy Settings]
 NoProxyFor=localhost,127.0.0.1,::1
-Proxy Config Script=http://127.0.0.1:33331/commands/pac
-ProxyType=1
-httpProxy=http://127.0.0.1:10808
-httpsProxy=http://127.0.0.1:10808
-socksProxy=socks://127.0.0.1:10808
+ProxyType=0
