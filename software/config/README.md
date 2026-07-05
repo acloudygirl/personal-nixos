@@ -11,7 +11,6 @@
 - `sioyek/`：Sioyek PDF 阅读器用户偏好。
 - `gtk-3.0/`、`gtk-4.0/`、`gtkrc`、`gtkrc-2.0`：GTK 外观配置。
 - `fontconfig/`、`xsettingsd/`：字体和 XSettings 配置。
-- `codex-desktop/`：Codex Desktop 的 Electron flags。
 - 根目录下的 KDE/Qt/桌面偏好文件：例如 `kdeglobals`、`kglobalshortcutsrc`、`kioslaverc`、`mimeapps.list`。
 
 刻意没有收进来：

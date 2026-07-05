@@ -94,7 +94,7 @@ in
     sioyek # PDF 阅读器
     pandoc # Markdown 转 PDF
     texliveFull #md转pdf渲染库
-
+    codex
     #压缩软件
     kdePackages.ark
     p7zip
