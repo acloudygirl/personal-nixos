@@ -165,6 +165,12 @@ window-rule {
     draw-border-with-background false
 }
 
+window-rule {
+    match app-id=r#"^(wps|wpp|et|wpsoffice)$"#
+
+    default-column-width { proportion 0.98; }
+}
+
 binds {
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }

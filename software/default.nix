@@ -228,6 +228,9 @@ in
       };
 
       xdg.configFile."niri/config.kdl".source = ./config/niri/config.kdl;
+      xdg.dataFile."applications/wps-office-wps.desktop".source = ./config/wps-desktop/wps-office-wps.desktop;
+      xdg.dataFile."applications/wps-office-et.desktop".source = ./config/wps-desktop/wps-office-et.desktop;
+      xdg.dataFile."applications/wps-office-wpp.desktop".source = ./config/wps-desktop/wps-office-wpp.desktop;
       xdg.configFile."Thunar/uca.xml".text = ''
         <?xml version="1.0" encoding="UTF-8"?>
         <actions>
