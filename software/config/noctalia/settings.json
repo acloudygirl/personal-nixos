@@ -172,6 +172,26 @@
             ],
             "right": [
                 {
+                    "defaultSettings": {
+                        "barWidth": 0.6,
+                        "barSpectrumColor": "primary",
+                        "barSpectrumHeight": 10,
+                        "barSpectrumWidth": 220,
+                        "bloomIntensity": 0.5,
+                        "customPrimaryColor": "#6750A4",
+                        "customSecondaryColor": "#625B71",
+                        "fadeWhenIdle": false,
+                        "innerDiameter": 0.7,
+                        "ringOpacity": 0.8,
+                        "rotationSpeed": 0.5,
+                        "sensitivity": 1.5,
+                        "useCustomColors": false,
+                        "visualizationMode": 3,
+                        "waveThickness": 1.0
+                    },
+                    "id": "plugin:fancy-audiovisualizer"
+                },
+                {
                     "blacklist": [
                     ],
                     "chevronColor": "none",

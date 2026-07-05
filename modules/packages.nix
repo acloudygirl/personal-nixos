@@ -95,6 +95,7 @@ in
     pandoc # Markdown 转 PDF
     texliveFull #md转pdf渲染库
     codex
+    go-musicfox #网易云音乐
     #压缩软件
     kdePackages.ark
     p7zip
