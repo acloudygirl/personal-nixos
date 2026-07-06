@@ -11,6 +11,9 @@
   # SDDM 主题细节放在 sddm-theme.nix。
   services.xserver.enable = true;
   services.desktopManager.plasma6.enable = true;
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    dolphin
+  ];
   programs.niri.enable = true;
 
   services.displayManager.sddm.enable = true;

@@ -264,10 +264,7 @@ in
       xdg.mimeApps = {
         enable = true;
         associations.added = mimeDefaults // {
-          "inode/directory" = [
-            thunar
-            "org.kde.kate.desktop"
-          ];
+          "inode/directory" = thunar;
           "application/pdf" = [
             sioyek
             "okularApplication_pdf.desktop"
