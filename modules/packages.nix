@@ -96,6 +96,8 @@ in
     texliveFull #md转pdf渲染库
     codex
     go-musicfox #网易云音乐
+    cherry-studio #AI-TUI
+    mcp-nixos
     #压缩软件
     kdePackages.ark
     p7zip
