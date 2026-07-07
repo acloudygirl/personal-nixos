@@ -31,6 +31,7 @@ in
 {
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
+    fastfetch
     # 版本控制
     git
     gnumake
@@ -98,6 +99,7 @@ in
     go-musicfox #网易云音乐
     cherry-studio #AI-TUI
     mcp-nixos
+    qalculate-qt #科学计算器
     #压缩软件
     kdePackages.ark
     p7zip

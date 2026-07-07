@@ -166,6 +166,24 @@ window-rule {
 }
 
 window-rule {
+    match app-id="^kitty$"
+
+    shadow {
+        on
+        softness 12
+        spread 2
+        offset x=0 y=4
+        draw-behind-window true
+        color "#00000022"
+        inactive-color "#00000012"
+    }
+
+    background-effect {
+        blur true
+    }
+}
+
+window-rule {
     match app-id=r#"^(wps|wpp|et|wpsoffice)$"#
 
     default-column-width { proportion 0.98; }
