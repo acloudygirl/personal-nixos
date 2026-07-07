@@ -3,6 +3,14 @@
 let
   inherit (lib) genAttrs;
 
+  chromeProxyAuto = pkgs.writeShellScriptBin "chrome-proxy-auto" ''
+    if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
+      exec ${pkgs.google-chrome}/bin/google-chrome --proxy-server=http://127.0.0.1:10808 "$@"
+    fi
+
+    exec ${pkgs.google-chrome}/bin/google-chrome "$@"
+  '';
+
   chrome = "google-chrome.desktop";
   code = "code.desktop";
   thunar = "thunar.desktop";
@@ -212,6 +220,7 @@ in
         noctalia-shell
         xwayland-satellite
         kitty
+        chromeProxyAuto
       ];
 
       systemd.user.services.polkit-kde-agent = {
@@ -227,8 +236,14 @@ in
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      xdg.configFile."niri/config.kdl".source = ./config/niri/config.kdl;
-      xdg.configFile."kitty/kitty.conf".source = ./config/kitty/kitty.conf;
+      xdg.configFile."niri/config.kdl" = {
+        source = ./config/niri/config.kdl;
+        force = true;
+      };
+      xdg.configFile."kitty/kitty.conf" = {
+        source = ./config/kitty/kitty.conf;
+        force = true;
+      };
       xdg.dataFile."applications/wps-office-wps.desktop".source = ./config/wps-desktop/wps-office-wps.desktop;
       xdg.dataFile."applications/wps-office-et.desktop".source = ./config/wps-desktop/wps-office-et.desktop;
       xdg.dataFile."applications/wps-office-wpp.desktop".source = ./config/wps-desktop/wps-office-wpp.desktop;

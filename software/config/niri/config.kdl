@@ -1,7 +1,7 @@
 spawn-at-startup "fcitx5"
 spawn-at-startup "systemctl" "--user" "import-environment" "DISPLAY" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "XDG_SESSION_TYPE" "NIRI_SOCKET"
 spawn-at-startup "systemctl" "--user" "start" "polkit-kde-agent.service"
-spawn-at-startup "chrome"
+spawn-at-startup "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"
 spawn-at-startup "kitty"
 spawn-at-startup "v2rayN"
 spawn-at-startup "noctalia-shell"
@@ -195,7 +195,7 @@ binds {
 
     Ctrl+Alt+T { spawn "kitty"; }
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
-    Mod+B { spawn "google-chrome"; }
+    Mod+B { spawn "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"; }
     Mod+F { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
     Mod+Escape { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
 
