@@ -4,11 +4,20 @@ let
   inherit (lib) genAttrs;
 
   chromeProxyAuto = pkgs.writeShellScriptBin "chrome-proxy-auto" ''
-    if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
-      exec ${pkgs.google-chrome}/bin/google-chrome --proxy-server=http://127.0.0.1:10808 "$@"
-    fi
+    for _ in $(seq 1 20); do
+      if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
+        exec ${pkgs.google-chrome}/bin/google-chrome \
+          --proxy-server=socks5://127.0.0.1:10808 \
+          --host-resolver-rules='MAP * ~NOTFOUND , EXCLUDE 127.0.0.1' \
+          "$@"
+      fi
+      sleep 0.5
+    done
 
-    exec ${pkgs.google-chrome}/bin/google-chrome "$@"
+    exec ${pkgs.google-chrome}/bin/google-chrome \
+      --proxy-server=socks5://127.0.0.1:10808 \
+      --host-resolver-rules='MAP * ~NOTFOUND , EXCLUDE 127.0.0.1' \
+      "$@"
   '';
 
   chrome = "google-chrome.desktop";

@@ -13,6 +13,7 @@
     ./modules/power.nix
     ./modules/proxy-tools.nix
     ./modules/users.nix
+    ./modules/waydroid.nix
     ./sddm-theme.nix
   ];
 
