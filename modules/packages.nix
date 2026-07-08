@@ -86,6 +86,7 @@ in
     nodejs_22
     vscode
     qq
+    wechat
     wpsoffice-cn
     helix #.nix文件编辑器，nano替代
     kdePackages.gwenview # 图片查看器

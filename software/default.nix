@@ -218,6 +218,13 @@ let
 in
 
 {
+  environment.etc."opt/chrome/policies/managed/proxy.json".text =
+    builtins.toJSON {
+      ProxyMode = "fixed_servers";
+      ProxyServer = "socks5://127.0.0.1:10808";
+      ProxyBypassList = "<-loopback>";
+    };
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
