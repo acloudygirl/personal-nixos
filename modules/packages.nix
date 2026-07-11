@@ -101,6 +101,7 @@ in
     opencode #AI
     mcp-nixos
     qalculate-qt #科学计算器
+    waybar #左侧任务栏
     #压缩软件
     kdePackages.ark
     p7zip

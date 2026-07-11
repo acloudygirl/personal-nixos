@@ -1,0 +1,26 @@
+{
+  "layer": "top",
+  "position": "left",
+  "width": 48,
+  "spacing": 4,
+
+  "modules-left": [
+    "niri/workspaces"
+  ],
+  "modules-center": [
+    "niri/window"
+  ],
+
+  "niri/workspaces": {
+    "format": "{index}",
+    "on-click": "activate",
+    "sort-by-number": true
+  },
+
+  "niri/window": {
+    "max-length": 50,
+    "rewrite": {
+      "": ""
+    }
+  }
+}

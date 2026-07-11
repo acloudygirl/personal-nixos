@@ -1,0 +1,36 @@
+* {
+  font-family: "Noto Sans", "Tabler Icons", sans-serif;
+  font-size: 14px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(30, 30, 46, 0.93);
+  color: #cdd6f4;
+}
+
+#workspaces button {
+  padding: 4px 8px;
+  color: #6c7086;
+  border-radius: 8px;
+  margin: 2px 4px;
+  min-width: 32px;
+}
+
+#workspaces button.active {
+  color: #cba6f7;
+  background: rgba(203, 166, 247, 0.15);
+}
+
+#workspaces button.urgent {
+  color: #f38ba8;
+  background: rgba(243, 139, 168, 0.15);
+}
+
+#window {
+  padding: 8px 4px;
+  color: #cdd6f4;
+  font-size: 12px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}

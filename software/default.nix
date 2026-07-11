@@ -237,6 +237,7 @@ in
         xwayland-satellite
         kitty
         chromeProxyAuto
+        waybar
       ];
 
       systemd.user.services.polkit-kde-agent = {
@@ -252,8 +253,34 @@ in
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
+      systemd.user.services.waybar-left = {
+        Unit = {
+          Description = "Waybar Left Taskbar";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.waybar}/bin/waybar -c ${config.xdg.configHome}/waybar/config.jsonc -s ${config.xdg.configHome}/waybar/style.css";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "graphical-session.target" ];
+      };
+
       xdg.configFile."niri/config.kdl" = {
         source = ./config/niri/config.kdl;
+        force = true;
+      };
+      xdg.configFile."noctalia/settings.json" = {
+        source = (pkgs.formats.json { }).generate "noctalia-settings.json"
+          (import ./config/noctalia/default.nix { inherit lib; });
+        force = true;
+      };
+      xdg.configFile."waybar/config.jsonc" = {
+        source = ./config/waybar/config.jsonc;
+        force = true;
+      };
+      xdg.configFile."waybar/style.css" = {
+        source = ./config/waybar/style.css;
         force = true;
       };
       xdg.configFile."kitty/kitty.conf" = {

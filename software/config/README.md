@@ -5,7 +5,17 @@
 当前已收进来的内容包括：
 
 - `niri/`：Niri 窗口管理器配置，已经在 `software/default.nix` 中映射到 `~/.config/niri/config.kdl`。
-- `noctalia/`：Noctalia Shell 的主题和行为设置。
+- `noctalia/`：Noctalia Shell 的主题和行为设置，已模块化管理：
+  - `default.nix`：主入口，合并所有子模块
+  - `bar.nix`：状态栏及 widget 配置
+  - `dock.nix`：Dock 设置
+  - `general.nix`：通用设置、快捷键、hooks
+  - `notifications.nix`：通知和 OSD
+  - `wallpaper.nix`：壁纸设置
+  - `appearance.nix`：配色方案、UI、夜间模式
+  - `system.nix`：系统监控、亮度、空闲、性能
+  - `apps.nix`：应用启动器、日历、控制中心、会话菜单
+  - `misc.nix`：音频、网络、位置等杂项
 - `fcitx5/`：输入法配置，已排除生成缓存 `conf/cached_layouts`。
 - `glow/`：Glow Markdown 阅读器配置。
 - `sioyek/`：Sioyek PDF 阅读器用户偏好。
