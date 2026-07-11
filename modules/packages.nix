@@ -98,7 +98,7 @@ in
     texliveFull #md转pdf渲染库
     codex
     go-musicfox #网易云音乐
-    cherry-studio #AI-TUI
+    opencode #AI
     mcp-nixos
     qalculate-qt #科学计算器
     #压缩软件
