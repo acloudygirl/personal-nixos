@@ -31,6 +31,4 @@ window#waybar {
   padding: 8px 4px;
   color: #cdd6f4;
   font-size: 12px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
 }
