@@ -31,6 +31,7 @@ in
 {
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
+    bitwarden-cli #密码库
     fastfetch
     # 版本控制
     git
@@ -80,7 +81,6 @@ in
     # 桌面应用
     #kdePackages.konsole    #KED命令行
     kdePackages.polkit-kde-agent-1
-    firefox
     google-chrome
     home-manager
     nodejs_22
@@ -101,7 +101,6 @@ in
     opencode #AI
     mcp-nixos
     qalculate-qt #科学计算器
-    waybar #左侧任务栏
     #压缩软件
     kdePackages.ark
     p7zip

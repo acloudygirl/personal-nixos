@@ -1,0 +1,353 @@
+# Noctalia v5 统一配置（Nix 管理）
+# 所有改动在此文件中进行，rebuild 后生效
+
+[shell]
+font_family = "Noto Sans"
+animation_speed = 1.0
+enable_shadows = true
+enable_blur_behind = true
+show_changelog_on_startup = true
+telemetry_enabled = false
+avatar_image = "/home/cloudygirl/.face"
+clock_format = ""
+clock_style = "digital"
+lock_screen_animations = false
+lock_screen_blur = 0
+lock_screen_countdown_duration = 10000
+lock_screen_tint = 0
+dimmer_opacity = 0.2
+smooth_scroll_enabled = true
+
+# ===== 主题 =====
+
+[theme]
+mode = "auto"
+source = "community"
+community_palette = "Mizuki-Akiyama"
+
+# ===== Bar 配置 =====
+
+[bar.top]
+position = "top"
+enabled = true
+thickness = 34
+background_opacity = 0.93
+radius = 12
+margin_ends = 5
+margin_edge = 0
+padding = 14
+widget_spacing = 6
+hover_highlight = true
+reserve_space = true
+show_on_workspace_switch = true
+concave_edge_corners = true
+scale = 1.0
+font_weight = "regular"
+font_family = "Noto Sans"
+capsule = true
+capsule_fill = "surface_variant"
+capsule_opacity = 0.9
+capsule_radius = 8.0
+
+start = ["launcher", "workspaces", "sysmon-cpu", "sysmon-temp", "sysmon-ram", "sysmon-net", "active-window", "media"]
+center = ["clock", "weather"]
+end = ["audio-visualizer", "tray", "notifications", "battery", "volume", "brightness", "control-center", "session"]
+
+[bar.left]
+position = "left"
+enabled = true
+thickness = 36
+background_opacity = 0.93
+radius = 12
+margin_edge = 0
+padding = 6
+widget_spacing = 4
+hover_highlight = true
+reserve_space = true
+capsule = true
+capsule_fill = "surface_variant"
+capsule_opacity = 0.9
+capsule_radius = 8.0
+
+start = ["launcher"]
+center = ["taskbar"]
+end = []
+
+# ===== Widget 定义 =====
+
+[widget.launcher]
+glyph = "rocket"
+capsule = true
+
+[widget.workspaces]
+display = "id"
+minimal = false
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "secondary"
+labels_only_when_occupied = true
+pill_scale = 0.6
+active_pill_size = 2.2
+inactive_pill_size = 1.0
+
+[widget.sysmon-cpu]
+type = "sysmon"
+stat = "cpu_usage"
+display = "text"
+show_label = true
+
+[widget.sysmon-temp]
+type = "sysmon"
+stat = "cpu_temp"
+display = "text"
+show_label = true
+
+[widget.sysmon-ram]
+type = "sysmon"
+stat = "ram_used"
+display = "text"
+show_label = true
+
+[widget.sysmon-net]
+type = "sysmon"
+stat = "net_rx"
+display = "text"
+show_label = true
+
+[widget.active_window]
+min_length = 80
+max_length = 145
+display = "icon_and_text"
+title_scroll = "on_hover"
+capsule = true
+
+[widget.media]
+hide_when_no_media = true
+album_art_only = false
+max_length = 145
+title_scroll = "on_hover"
+capsule = true
+
+[widget.clock]
+format = "%H:%M"
+tooltip_format = "%A, %B %d, %Y"
+capsule = true
+
+[widget.weather]
+show_condition = true
+show_temperature = true
+capsule = true
+
+[widget.audio-visualizer]
+type = "audio_visualizer"
+width = 64
+bands = 16
+mirrored = true
+centered = true
+show_when_idle = false
+color_1 = "primary"
+color_2 = "secondary"
+capsule = false
+
+[widget.tray]
+drawer = true
+drawer_columns = 3
+capsule = true
+
+[widget.notifications]
+hide_when_no_unread = true
+capsule = true
+
+[widget.battery]
+display_mode = "graphic"
+device = "auto"
+show_label = false
+capsule = true
+
+[widget.volume]
+show_label = false
+scroll_step = 5
+capsule = true
+
+[widget.brightness]
+show_label = false
+scroll_step = 5
+capsule = true
+
+[widget.control-center]
+glyph = "noctalia"
+capsule = true
+
+[widget.session]
+capsule = true
+
+# 左侧 Taskbar：按工作区分组，胶囊样式
+[widget.taskbar]
+type = "taskbar"
+group_by_workspace = true
+show_all_outputs = false
+show_workspace_label = true
+workspace_label_placement = "corner"
+hide_empty_workspaces = true
+workspace_group_capsule = true
+group_single_icon_per_app = true
+show_active_indicator = true
+active_opacity = 1.0
+inactive_opacity = 0.8
+capsule_radius = 8.0
+
+# ===== 壁纸 =====
+
+[wallpaper]
+enabled = true
+fill_mode = "crop"
+directory = "/home/cloudygirl/Pictures"
+set_wallpaper_on_all_monitors = true
+sort_order = "date_desc"
+transition_duration = 1500
+transition_type = ["fade", "disc", "stripes", "wipe", "pixelate", "honeycomb"]
+link_light_and_dark_wallpapers = true
+show_hidden_files = true
+view_mode = "recursive"
+
+# ===== 夜间模式 =====
+
+[night_light]
+enabled = false
+auto_schedule = true
+day_temp = "6500"
+night_temp = "4000"
+
+# ===== 通知 =====
+
+[notifications]
+enabled = true
+location = "top_right"
+low_urgency_duration = 3
+normal_urgency_duration = 8
+critical_urgency_duration = 15
+clear_dismissed = true
+save_to_history = { critical = true, low = true, normal = true }
+
+# ===== OSD =====
+
+[osd]
+enabled = true
+location = "top_right"
+auto_hide_ms = 2000
+
+# ===== 音频 =====
+
+[audio]
+volume_step = 5
+volume_feedback = false
+volume_overdrive = false
+spectrum_frame_rate = 30
+spectrum_mirrored = true
+visualizer_type = "linear"
+
+# ===== 亮度 =====
+
+[brightness]
+brightness_step = 5
+enforce_minimum = true
+enable_ddc_support = false
+
+# ===== 空闲 =====
+
+[idle]
+enabled = false
+lock_timeout = 660
+screen_off_timeout = 600
+suspend_timeout = 1800
+
+# ===== 系统监控 =====
+
+[system.monitor]
+cpu_warning_threshold = 80
+cpu_critical_threshold = 90
+mem_warning_threshold = 80
+mem_critical_threshold = 90
+temp_warning_threshold = 80
+temp_critical_threshold = 90
+battery_warning_threshold = 20
+battery_critical_threshold = 5
+gpu_warning_threshold = 80
+gpu_critical_threshold = 90
+disk_warning_threshold = 80
+disk_critical_threshold = 90
+disk_avail_warning_threshold = 20
+disk_avail_critical_threshold = 10
+
+# ===== 天气 =====
+
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "metric"
+effects = true
+
+# ===== 位置 =====
+
+[location]
+auto_locate = false
+address = "Suzhou, CN"
+use_12hour_format = false
+first_day_of_week = -1
+
+# ===== 控制中心 =====
+
+[control_center]
+position = "close_to_bar_button"
+
+# ===== Dock（禁用）=====
+
+[dock]
+enabled = false
+
+# ===== Launcher =====
+
+[launcher]
+terminal_command = "alacritty -e"
+icon_mode = "tabler"
+sort_by_most_used = true
+show_categories = true
+view_mode = "list"
+position = "center"
+
+# ===== 插件 =====
+
+[plugins]
+auto_update = true
+notify_updates = true
+
+# ===== 桌面 Widget =====
+
+[desktop_widgets]
+enabled = true
+
+# ===== Shell 面板 =====
+
+[shell.panel]
+session_placement = "floating"
+session_position = "center"
+
+[shell.session]
+grid = true
+
+# ===== 主题模板 =====
+
+[theme.templates]
+builtin_ids = ["kitty", "niri", "qt"]
+community_ids = ["vscode", "zed", "papirus-icons", "telegram"]
+
+# ===== UI =====
+
+[ui]
+font_default = "Noto Sans"
+font_fixed = "monospace"
+panel_background_opacity = 0.93
+panels_attached_to_bar = true
+scrollbar_always_visible = true
+tooltips_enabled = true
+settings_panel_mode = "attached"

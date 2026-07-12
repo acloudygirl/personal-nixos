@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, noctalia, zen-browser, ... }:
 
 let
   inherit (lib) genAttrs;
@@ -230,15 +230,45 @@ in
     useUserPackages = true;
 
     users.cloudygirl = { config, ... }: {
+      imports = [ noctalia.homeModules.default ];
+
       home.stateVersion = "26.05";
 
       home.packages = with pkgs; [
-        noctalia-shell
         xwayland-satellite
         kitty
         chromeProxyAuto
-        waybar
+        zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
+
+      programs.noctalia = {
+        enable = true;
+        systemd.enable = true;
+      };
+
+      xdg.configFile."noctalia/config.json".source =
+        ./config/noctalia/noctalia-base-settings-v4.json;
+
+      programs.google-chrome = {
+        enable = true;
+        commandLineArgs = [
+          "--enable-experimental-web-platform-features"
+          "--enable-features=AcceleratedVideoDecodeLinuxGL"
+        ];
+      };
+
+      programs.firefox = {
+        enable = true;
+        profiles.main = {
+          id = 0;
+          isDefault = true;
+          settings = {
+            "sidebar.verticalTabs" = true;
+            "browser.search.openintab" = true;
+            "browser.urlbar.openintab" = true;
+          };
+        };
+      };
 
       systemd.user.services.polkit-kde-agent = {
         Unit = {
@@ -253,34 +283,8 @@ in
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      systemd.user.services.waybar-left = {
-        Unit = {
-          Description = "Waybar Left Taskbar";
-          PartOf = [ "graphical-session.target" ];
-          After = [ "graphical-session.target" ];
-        };
-        Service = {
-          ExecStart = "${pkgs.waybar}/bin/waybar -c ${config.xdg.configHome}/waybar/config.jsonc -s ${config.xdg.configHome}/waybar/style.css";
-          Restart = "on-failure";
-        };
-        Install.WantedBy = [ "graphical-session.target" ];
-      };
-
       xdg.configFile."niri/config.kdl" = {
         source = ./config/niri/config.kdl;
-        force = true;
-      };
-      xdg.configFile."noctalia/settings.json" = {
-        source = (pkgs.formats.json { }).generate "noctalia-settings.json"
-          (import ./config/noctalia/default.nix { inherit lib; });
-        force = true;
-      };
-      xdg.configFile."waybar/config.jsonc" = {
-        source = ./config/waybar/config.jsonc;
-        force = true;
-      };
-      xdg.configFile."waybar/style.css" = {
-        source = ./config/waybar/style.css;
         force = true;
       };
       xdg.configFile."kitty/kitty.conf" = {

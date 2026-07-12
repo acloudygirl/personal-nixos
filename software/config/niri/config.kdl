@@ -4,7 +4,7 @@ spawn-at-startup "systemctl" "--user" "start" "polkit-kde-agent.service"
 spawn-at-startup "v2rayN"
 spawn-at-startup "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"
 spawn-at-startup "kitty"
-spawn-at-startup "noctalia-shell"
+spawn-at-startup "noctalia"
 
 prefer-no-csd
 
@@ -196,8 +196,8 @@ binds {
     Ctrl+Alt+T { spawn "kitty"; }
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"; }
-    Mod+F { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    Mod+Escape { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+    Mod+F { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Mod+Escape { spawn-sh "noctalia msg panel-toggle control-center"; }
 
     Print { screenshot show-pointer=false; }
     Ctrl+Alt+A { spawn-sh "grim -g \"$(slurp)\" -t png - | wl-copy -t image/png"; }
