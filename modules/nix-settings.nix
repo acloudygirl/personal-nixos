@@ -45,5 +45,7 @@
     HTTPS_PROXY = "http://127.0.0.1:10808";
     no_proxy = "localhost,127.0.0.1,::1";
     NO_PROXY = "localhost,127.0.0.1,::1";
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 }
