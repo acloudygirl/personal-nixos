@@ -32,6 +32,8 @@ in
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
     bitwarden-cli #密码库
+    jq
+    fzf
     fastfetch
     # 版本控制
     git
