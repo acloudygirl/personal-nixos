@@ -3,3 +3,5 @@ result
 .agents/
 .codex/
 notes/*.pdf
+*.[oa]
+*~
