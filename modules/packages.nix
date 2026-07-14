@@ -92,7 +92,6 @@ in
     wpsoffice-cn
     helix #.nix文件编辑器，nano替代
     kdePackages.gwenview # 图片查看器
-    haruna # 视频播放器
     kdePackages.elisa # 音乐播放器
     marktext # Markdown 阅读器
     sioyek # PDF 阅读器
@@ -109,5 +108,10 @@ in
     unzip
     zip
     unrar
+    #视频播放
+    mpv
+    vlc
+    celluloid  # GTK 前端
+    haruna # 视频播放器
   ];
 }
