@@ -194,6 +194,7 @@ binds {
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
     Ctrl+Alt+T { spawn "kitty"; }
+    Mod+V { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"; }
     Mod+F { spawn-sh "noctalia msg panel-toggle launcher"; }

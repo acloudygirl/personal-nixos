@@ -32,6 +32,7 @@ in
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
     tree #linux-shell tree
+    file #linux-shell filew
     bitwarden-cli #密码库
     jq
     fzf
@@ -104,6 +105,8 @@ in
     opencode #AI
     mcp-nixos
     github-mcp-server #GitHub MCP 服务
+    wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
+    cliphist #剪贴板历史（noctalia 依赖）
     qalculate-qt #科学计算器
     #压缩软件
     kdePackages.ark
