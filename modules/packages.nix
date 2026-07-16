@@ -31,9 +31,11 @@ in
 {
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
+    tree #linux-shell tree
     bitwarden-cli #密码库
     jq
     fzf
+
     fastfetch
     # 版本控制
     git
@@ -101,6 +103,7 @@ in
     go-musicfox #网易云音乐
     opencode #AI
     mcp-nixos
+    github-mcp-server #GitHub MCP 服务
     qalculate-qt #科学计算器
     #压缩软件
     kdePackages.ark
