@@ -41,6 +41,7 @@ in
     # 版本控制
     git
     gnumake
+    tmux
     # md-pdf转换命令
     mdpdf
     fastfetch
