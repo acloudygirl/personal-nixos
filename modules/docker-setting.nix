@@ -1,13 +1,23 @@
 { pkgs, ... }:
 {
-    virtualisation.docker.enable = true;         #启用docker
-    users.users.cloudygirl.extraGroups = [ "docker" ];  #加入权限组
-    virtualisation.docker.autoPrune.enable = true;   #docker自动清理垃圾功能
-    virtualisation.docker.autoPrune.dates = "weekly"; #每周清理垃圾
+    virtualisation.docker.enable = true;
+    users.users.cloudygirl.extraGroups = [ "docker" ];
+    virtualisation.docker.autoPrune.enable = true;
+    virtualisation.docker.autoPrune.dates = "weekly";
 
-    virtualisation.docker.daemon.settings = { #启用国内镜像源
+    virtualisation.docker.daemon.settings = {
         registry-mirrors = [
-        "https://docker.m.daocloud.io"
+            "https://docker.1panel.live"
+            "https://dockerproxy.net"
         ];
     };
+
+    # systemd.services.docker.environment = {
+    #     HTTP_PROXY = "http://127.0.0.1:10808";
+    #     HTTPS_PROXY = "http://127.0.0.1:10808";
+    #     http_proxy = "http://127.0.0.1:10808";
+    #     https_proxy = "http://127.0.0.1:10808";
+    #     NO_PROXY = "localhost,127.0.0.1,::1";
+    #     no_proxy = "localhost,127.0.0.1,::1";
+    # };
 }
