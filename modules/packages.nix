@@ -104,6 +104,7 @@ in
     codex
     go-musicfox #网易云音乐
     opencode #AI
+    opencode-desktop
     mcp-nixos
     github-mcp-server #GitHub MCP 服务
     wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）

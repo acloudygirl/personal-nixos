@@ -14,6 +14,7 @@
     ./modules/proxy-tools.nix
     ./modules/users.nix
     ./sddm-theme.nix
+    ./modules/docker-setting.nix
   ];
 
   # NixOS 版本兼容级别

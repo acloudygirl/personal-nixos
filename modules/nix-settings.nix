@@ -27,24 +27,8 @@
     trusted-users = [ "root" "cloudygirl" ];
   };
 
-  # nix-daemon 代理环境变量，重启后自动生效
-  systemd.services.nix-daemon.environment = {
-    http_proxy = "http://127.0.0.1:10808";
-    https_proxy = "http://127.0.0.1:10808";
-    HTTP_PROXY = "http://127.0.0.1:10808";
-    HTTPS_PROXY = "http://127.0.0.1:10808";
-    no_proxy = "localhost,127.0.0.1,::1";
-    NO_PROXY = "localhost,127.0.0.1,::1";
-  };
-
-  # 全局代理环境变量，所有用户（包括 root/sudo）都能用
+  # 代理由 nix-proxy-on / nix-proxy-off 动态控制，不再硬编码
   environment.variables = {
-    http_proxy = "http://127.0.0.1:10808";
-    https_proxy = "http://127.0.0.1:10808";
-    HTTP_PROXY = "http://127.0.0.1:10808";
-    HTTPS_PROXY = "http://127.0.0.1:10808";
-    no_proxy = "localhost,127.0.0.1,::1";
-    NO_PROXY = "localhost,127.0.0.1,::1";
     EDITOR = "hx";
     VISUAL = "hx";
   };
