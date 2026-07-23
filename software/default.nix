@@ -218,12 +218,7 @@ let
 in
 
 {
-  environment.etc."opt/chrome/policies/managed/proxy.json".text =
-    builtins.toJSON {
-      ProxyMode = "fixed_servers";
-      ProxyServer = "socks5://127.0.0.1:10808";
-      ProxyBypassList = "<-loopback>";
-    };
+  # Chrome 代理策略由 nix-proxy-on / nix-proxy-off 动态管理
 
   home-manager = {
     useGlobalPkgs = true;

@@ -30,6 +30,51 @@ EOF
     ${pkgs.systemd}/bin/systemctl daemon-reload
     ${pkgs.systemd}/bin/systemctl restart nix-daemon.service
     echo "nix-daemon proxy enabled: $proxy_url"
+
+    # --- Chrome managed policy ---
+    ${pkgs.coreutils}/bin/install -d -m 0755 /run/nix-proxy
+    ${pkgs.coreutils}/bin/touch /run/nix-proxy/enabled
+    ${pkgs.coreutils}/bin/install -d -m 0755 /etc/opt/chrome/policies/managed
+    ${pkgs.coreutils}/bin/ln -sfn ${chromeProxyPolicy} /etc/opt/chrome/policies/managed/proxy.json
+    echo "Chrome proxy policy enabled"
+
+    # --- Desktop proxy (KDE / GNOME) ---
+    target_user="''${SUDO_USER:-}"
+    if [ -z "$target_user" ] && [ -n "''${PKEXEC_UID:-}" ]; then
+      target_user="$(${pkgs.coreutils}/bin/id -nu "$PKEXEC_UID" 2>/dev/null || true)"
+    fi
+    target_user="''${target_user:-cloudygirl}"
+    target_home="$(${pkgs.coreutils}/bin/getent passwd "$target_user" 2>/dev/null | ${pkgs.coreutils}/bin/cut -d: -f6)"
+    target_home="''${target_home:-/home/$target_user}"
+
+    proxy_host="''${proxy_url#*://}"; proxy_host="''${proxy_host%%:*}"
+    proxy_port="''${proxy_url##*:}"
+    ignore_hosts="localhost,127.0.0.0/8,::1"
+
+    # KDE — write directly as root (bypasses sudo/PATH issues)
+    kioslaverc="$target_home/.config/kioslaverc"
+    if [ -f "$kioslaverc" ]; then
+      ${pkgs.gnused}/bin/sed -i 's/^ProxyType=.*/ProxyType=1/' "$kioslaverc"
+      # Ensure proxy URL lines exist
+      for kv in \
+        "httpProxy=http://$proxy_host:$proxy_port" \
+        "httpsProxy=http://$proxy_host:$proxy_port" \
+        "ftpProxy=http://$proxy_host:$proxy_port" \
+        "socksProxy=socks://$proxy_host:$proxy_port" \
+        "NoProxyFor=$ignore_hosts"
+      do
+        key="''${kv%%=*}"
+        if ${pkgs.gnugrep}/bin/grep -q "^$key=" "$kioslaverc" 2>/dev/null; then
+          ${pkgs.gnused}/bin/sed -i "s|^$key=.*|$kv|" "$kioslaverc"
+        else
+          echo "$kv" >> "$kioslaverc"
+        fi
+      done
+      echo "KDE proxy enabled"
+    fi
+
+    # Remove v2rayN lock so it can manage proxy again
+    ${pkgs.coreutils}/bin/rm -f "$target_home/.config/v2rayn/proxy-locked-off"
   '';
 
   nixProxyOff = pkgs.writeShellScriptBin "nix-proxy-off" ''
@@ -50,6 +95,32 @@ EOF
     ${pkgs.systemd}/bin/systemctl daemon-reload
     ${pkgs.systemd}/bin/systemctl restart nix-daemon.service
     echo "nix-daemon proxy disabled"
+
+    # --- Chrome managed policy ---
+    ${pkgs.coreutils}/bin/rm -f /run/nix-proxy/enabled
+    ${pkgs.coreutils}/bin/rm -f /etc/opt/chrome/policies/managed/proxy.json
+    echo "Chrome proxy policy disabled"
+
+    # --- Desktop proxy (KDE / GNOME) ---
+    target_user="''${SUDO_USER:-}"
+    if [ -z "$target_user" ] && [ -n "''${PKEXEC_UID:-}" ]; then
+      target_user="$(${pkgs.coreutils}/bin/id -nu "$PKEXEC_UID" 2>/dev/null || true)"
+    fi
+    target_user="''${target_user:-cloudygirl}"
+    target_home="$(${pkgs.coreutils}/bin/getent passwd "$target_user" 2>/dev/null | ${pkgs.coreutils}/bin/cut -d: -f6)"
+    target_home="''${target_home:-/home/$target_user}"
+
+    # KDE — write directly as root (bypasses sudo/PATH issues)
+    kioslaverc="$target_home/.config/kioslaverc"
+    if [ -f "$kioslaverc" ]; then
+      ${pkgs.gnused}/bin/sed -i 's/^ProxyType=.*/ProxyType=0/' "$kioslaverc"
+      echo "KDE proxy disabled"
+    fi
+
+    # Prevent v2rayN from re-enabling proxy
+    ${pkgs.coreutils}/bin/mkdir -p "$target_home/.config/v2rayn"
+    ${pkgs.coreutils}/bin/touch "$target_home/.config/v2rayn/proxy-locked-off"
+    echo "v2rayN proxy lock: active"
   '';
 
   nixProxyStatus = pkgs.writeShellScriptBin "nix-proxy-status" ''
@@ -57,17 +128,47 @@ EOF
 
     dropin=/run/systemd/system/nix-daemon.service.d/10-v2rayn-proxy.conf
 
+    echo "=== nix-daemon proxy ==="
     if [ -f "$dropin" ]; then
-      echo "nix-daemon proxy: enabled"
+      echo "  status: enabled"
       ${pkgs.gnused}/bin/sed -n 's/^Environment="\([^"]*\)"$/  \1/p' "$dropin"
     else
-      echo "nix-daemon proxy: disabled"
+      echo "  status: disabled"
     fi
 
-    if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
-      echo "v2rayN local proxy: listening on 127.0.0.1:10808"
+    echo "=== Chrome proxy policy ==="
+    chrome_policy=/etc/opt/chrome/policies/managed/proxy.json
+    if [ -f "$chrome_policy" ] && [ -f /run/nix-proxy/enabled ]; then
+      echo "  status: enabled"
     else
-      echo "v2rayN local proxy: not listening on 127.0.0.1:10808"
+      echo "  status: disabled"
+    fi
+
+    echo "=== KDE desktop proxy ==="
+    kde_config=""
+    if command -v kwriteconfig6 >/dev/null 2>&1; then
+      kde_config="kwriteconfig6"
+    elif command -v kwriteconfig5 >/dev/null 2>&1; then
+      kde_config="kwriteconfig5"
+    fi
+    if [ -n "$kde_config" ]; then
+      proxy_type="$("$kde_config" --file kioslaverc --group "Proxy Settings" --key ProxyType 2>/dev/null || true)"
+      if [ "''${proxy_type:-}" = "1" ]; then
+        echo "  status: enabled"
+        echo "  httpProxy: $("$kde_config" --file kioslaverc --group "Proxy Settings" --key httpProxy 2>/dev/null || true)"
+        echo "  socksProxy: $("$kde_config" --file kioslaverc --group "Proxy Settings" --key socksProxy 2>/dev/null || true)"
+      else
+        echo "  status: disabled (ProxyType=''${proxy_type:-})"
+      fi
+    else
+      echo "  status: unknown (kwriteconfig not found)"
+    fi
+
+    echo "=== v2rayN local proxy ==="
+    if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
+      echo "  listening on 127.0.0.1:10808"
+    else
+      echo "  not listening on 127.0.0.1:10808"
     fi
   '';
 
@@ -78,6 +179,12 @@ EOF
     proxy_ip="''${2:-127.0.0.1}"
     proxy_port="''${3:-10808}"
     ignore_hosts="''${4:-localhost,127.0.0.0/8,::1}"
+
+    # Respect nix-proxy-off lock — skip if proxy was explicitly disabled
+    lock_file="''${HOME:-/home/cloudygirl}/.config/v2rayn/proxy-locked-off"
+    if [ -f "$lock_file" ]; then
+      exit 0
+    fi
 
     notify_kio() {
       if ${pkgs.dbus}/bin/dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1; then
@@ -152,6 +259,12 @@ EOF
         ;;
     esac
   '';
+
+  chromeProxyPolicy = pkgs.writeText "chrome-proxy-policy.json" (builtins.toJSON {
+    ProxyMode = "fixed_servers";
+    ProxyServer = "socks5://127.0.0.1:10808";
+    ProxyBypassList = "<-loopback>";
+  });
 in
 
 {
