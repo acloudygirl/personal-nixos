@@ -12,6 +12,7 @@
     ./modules/packages.nix
     ./modules/power.nix
     ./modules/proxy-tools.nix
+    ./modules/proxy.nix
     ./modules/users.nix
     ./sddm-theme.nix
     ./modules/docker-setting.nix

@@ -1,56 +1,5 @@
 { pkgs, ... }:
 let
-  proxyPort = "10808";
-  noProxy = "localhost,127.0.0.1,::1";
-
-  proxy = pkgs.writeShellScriptBin "proxy" ''
-    set -euo pipefail
-
-    if [ "$(${pkgs.coreutils}/bin/id -u)" -ne 0 ]; then
-      exec ${pkgs.sudo}/bin/sudo "$0" "$@"
-    fi
-
-    dropin_dir=/run/systemd/system/nix-daemon.service.d
-    dropin="$dropin_dir/10-proxy.conf"
-
-    case "''${1:-}" in
-      on)
-        install -d -m 0755 "$dropin_dir"
-        cat > "$dropin" <<EOF
-[Service]
-Environment="http_proxy=http://127.0.0.1:${proxyPort}"
-Environment="https_proxy=http://127.0.0.1:${proxyPort}"
-Environment="HTTP_PROXY=http://127.0.0.1:${proxyPort}"
-Environment="HTTPS_PROXY=http://127.0.0.1:${proxyPort}"
-Environment="no_proxy=${noProxy}"
-Environment="NO_PROXY=${noProxy}"
-EOF
-        ${pkgs.systemd}/bin/systemctl daemon-reload
-        ${pkgs.systemd}/bin/systemctl restart nix-daemon.service
-        echo "nix-daemon proxy: on"
-        ;;
-      off)
-        rm -f "$dropin"
-        rmdir --ignore-fail-on-non-empty "$dropin_dir" 2>/dev/null || true
-        ${pkgs.systemd}/bin/systemctl daemon-reload
-        ${pkgs.systemd}/bin/systemctl restart nix-daemon.service
-        echo "nix-daemon proxy: off"
-        ;;
-      status)
-        if [ -f "$dropin" ]; then
-          echo "nix-daemon proxy: on"
-          ${pkgs.gnused}/bin/sed -n 's/^Environment="\([^"]*\)"$/  \1/p' "$dropin"
-        else
-          echo "nix-daemon proxy: off"
-        fi
-        ;;
-      *)
-        echo "Usage: proxy {on|off|status}" >&2
-        exit 1
-        ;;
-    esac
-  '';
-
   v2raynSystemProxyScript = pkgs.writeShellScript "v2rayn-system-proxy-linux" ''
     set -u
     mode="''${1:-}"
@@ -138,6 +87,4 @@ in
     ${pkgs.coreutils}/bin/install -d -o cloudygirl -g users -m 0755 /home/cloudygirl/.local/share/v2rayN/binConfigs
     ${pkgs.coreutils}/bin/install -o cloudygirl -g users -m 0755 ${v2raynSystemProxyScript} /home/cloudygirl/.local/share/v2rayN/binConfigs/proxy_set_linux_sh.sh
   '';
-
-  environment.systemPackages = [ proxy ];
 }
