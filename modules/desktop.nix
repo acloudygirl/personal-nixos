@@ -21,6 +21,7 @@
   services.xserver.videoDrivers = [ "modesetting" ];
 
   # Flatpak 支持和 Flathub 远程仓库自动配置。
+  programs.steam.enable = true;
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub remote for Flatpak";
