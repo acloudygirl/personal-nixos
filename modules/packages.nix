@@ -110,6 +110,7 @@ in
     wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
     cliphist #剪贴板历史（noctalia 依赖）
     qalculate-qt #科学计算器
+
     #压缩软件
     kdePackages.ark
     p7zip

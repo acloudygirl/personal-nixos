@@ -10,6 +10,7 @@
     ./modules/networking.nix
     ./modules/nix-settings.nix
     ./modules/packages.nix
+    ./modules/minecraft.nix
     ./modules/power.nix
     ./modules/proxy-tools.nix
     ./modules/proxy.nix
