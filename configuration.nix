@@ -17,6 +17,7 @@
     ./modules/users.nix
     ./sddm-theme.nix
     ./modules/docker-setting.nix
+    ./modules/shell-aliases.nix
   ];
 
   # NixOS 版本兼容级别
