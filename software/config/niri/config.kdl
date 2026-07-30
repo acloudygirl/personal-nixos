@@ -197,7 +197,7 @@ binds {
     Mod+V { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"; }
-    Mod+T { spawn "goldendict-ng"; }
+    Mod+T { spawn "goldendict"; }
     Mod+F { spawn-sh "noctalia msg panel-toggle launcher"; }
     Mod+Escape { spawn-sh "noctalia msg panel-toggle control-center"; }
 
