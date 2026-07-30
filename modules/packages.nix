@@ -110,8 +110,11 @@ in
     wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
     cliphist #剪贴板历史（noctalia 依赖）
     qalculate-qt #科学计算器
-    calibre  #电子书管理
+    calibre #电子书管理
+    geary #邮箱
     anki #记忆卡片
+    flameshot #截图标注
+    goldendict-ng #轻量翻译软件
 
     #压缩软件
     kdePackages.ark

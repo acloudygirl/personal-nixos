@@ -197,10 +197,11 @@ binds {
     Mod+V { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Mod+E { spawn "thunar" "/home/cloudygirl"; }
     Mod+B { spawn "/home/cloudygirl/.local/state/nix/profiles/home-manager/home-path/bin/chrome-proxy-auto"; }
+    Mod+T { spawn "goldendict-ng"; }
     Mod+F { spawn-sh "noctalia msg panel-toggle launcher"; }
     Mod+Escape { spawn-sh "noctalia msg panel-toggle control-center"; }
 
-    Print { screenshot show-pointer=false; }
+    Print { spawn "flameshot" "gui"; }
     Ctrl+Alt+A { spawn-sh "grim -g \"$(slurp)\" -t png - | wl-copy -t image/png"; }
 
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
