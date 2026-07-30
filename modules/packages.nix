@@ -91,7 +91,7 @@ in
     home-manager
     nodejs_22
     vscode
-    qq
+    # qq 由 modules/qq-fix.nix 提供包装版本，修复 Wayland 剪贴板
     wechat
     wpsoffice-cn
     helix #.nix文件编辑器，nano替代
@@ -110,6 +110,8 @@ in
     wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
     cliphist #剪贴板历史（noctalia 依赖）
     qalculate-qt #科学计算器
+    calibre  #电子书管理
+    anki #记忆卡片
 
     #压缩软件
     kdePackages.ark
