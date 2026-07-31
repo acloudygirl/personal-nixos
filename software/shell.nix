@@ -79,15 +79,22 @@
       };
 
       directory = {
-        home_symbol = "⌂";
-        truncation_length = 2;
-        truncation_symbol = "□ ";
+        home_symbol = " ";
+        truncation_length = 3;
+        truncation_symbol = "…/";
         read_only = " ◈";
         use_os_path_sep = true;
         style = "italic blue";
         format = "[$path]($style)[$read_only]($read_only_style)";
         repo_root_style = "bold blue";
         repo_root_format = "[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) [△](bold bright-blue)";
+      };
+
+      directory.substitutions = {
+        "Documents" = "󰈙 ";
+        "Downloads" = " ";
+        "Music" = " ";
+        "Pictures" = " ";
       };
 
       cmd_duration.format = "[◄ $duration ](italic white)";
@@ -100,7 +107,7 @@
 
       git_branch = {
         format = " [$branch(:$remote_branch)]($style)";
-        symbol = "[△](bold italic bright-blue)";
+        symbol = "";
         style = "italic bright-blue";
         truncation_symbol = "⋯";
         truncation_length = 11;
@@ -132,16 +139,16 @@
       };
 
       nix_shell = {
-        style = "bold italic dimmed blue";
-        symbol = "✶";
-        format = "[$symbol nix⎪$state⎪]($style) [$name](italic dimmed white)";
-        impure_msg = "[⌽](bold dimmed red)";
-        pure_msg = "[⌾](bold dimmed green)";
-        unknown_msg = "[◌](bold dimmed yellow)";
+        style = "bold bright-blue bg:#394260";
+        symbol = "❄️";
+        format = "[$symbol$nix_shell]($style)";
+        impure_msg = "[⌽](bold red)";
+        pure_msg = "[⌾](bold green)";
+        unknown_msg = "[◌](bold yellow)";
       };
 
       nodejs = {
-        format = " [node](italic) [◫ ($version)](bold bright-green)";
+        format = " [node](italic) [ ($version)](bold bright-green)";
         version_format = "\${raw}";
       };
 
@@ -154,14 +161,64 @@
 
       rust = {
         format = " [rs](italic) [$symbol$version]($style)";
-        symbol = "⊃ ";
+        symbol = " ";
         version_format = "\${raw}";
         style = "bold red";
       };
 
       golang = {
-        symbol = "∩ ";
+        symbol = " ";
         format = " go [$symbol($version )]($style)";
+      };
+
+      bun = {
+        symbol = " ";
+        format = " [bun](italic) [ ($version)](bold bright-green)";
+        version_format = "\${raw}";
+      };
+
+      php = {
+        symbol = " ";
+        format = " [php](italic) [ ($version)](bold bright-green)";
+        version_format = "\${raw}";
+      };
+
+      os = {
+        style = "bg:##a0a9cb fg:#090c0c";
+        format = "[ $symbol ]($style)";
+        disabled = false;
+      };
+
+      os.symbols = {
+        Windows = "󰍲";
+        Ubuntu = "󰕈";
+        SUSE = "";
+        Raspbian = "󰐿";
+        Mint = "󰣭";
+        Macos = "󰀵";
+        Manjaro = "";
+        Linux = "󰌽";
+        Gentoo = "󰣨";
+        Fedora = "󰣛";
+        Alpine = "";
+        Amazon = "";
+        Android = "";
+        AOSC = "";
+        Arch = "󰣇";
+        Artix = "󰣇";
+        EndeavourOS = "";
+        CentOS = "";
+        Debian = "󰣚";
+        Redhat = "󱄛";
+        RedHatEnterprise = "󱄛";
+        Pop = "";
+      };
+
+      time = {
+        disabled = false;
+        time_format = "%R";
+        style = "bg:#1d2230";
+        format = "[ $time ](fg:#a0a9cb bg:#1d2230)($style)";
       };
     };
   };
