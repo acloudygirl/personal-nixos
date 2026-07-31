@@ -33,6 +33,7 @@ in
   environment.systemPackages = with pkgs; [
     tree #linux-shell tree
     file #linux-shell filew
+    procps # pkill/pstree 等进程工具
     bitwarden-cli #密码库
     jq
     fzf

@@ -51,7 +51,7 @@ capsule_radius = 8.0
 
 start = ["launcher", "workspaces", "sysmon-cpu", "sysmon-temp", "sysmon-ram", "sysmon-net", "active-window", "media"]
 center = ["clock", "weather"]
-end = ["audio-visualizer", "tray", "notifications", "battery", "volume", "brightness", "control-center", "session"]
+end = ["audio-visualizer", "tray", "notifications", "performance-toggle", "volume", "brightness", "control-center", "session"]
 
 [bar.left]
 position = "left"
@@ -157,6 +157,15 @@ capsule = true
 [widget.notifications]
 hide_when_no_unread = true
 capsule = true
+
+[widget.performance-toggle]
+type = "custom_button"
+glyph = "zap"
+tooltip = "切换安静/性能模式"
+capsule = true
+
+[widget.performance-toggle.actions]
+left = "exec /home/cloudygirl/bin/toggle-performance"
 
 [widget.battery]
 display_mode = "graphic"

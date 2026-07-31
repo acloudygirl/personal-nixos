@@ -22,8 +22,8 @@ Environment="http_proxy=http://127.0.0.1:${proxyPort}"
 Environment="https_proxy=http://127.0.0.1:${proxyPort}"
 Environment="HTTP_PROXY=http://127.0.0.1:${proxyPort}"
 Environment="HTTPS_PROXY=http://127.0.0.1:${proxyPort}"
-Environment="no_proxy=localhost,127.0.0.1,::1"
-Environment="NO_PROXY=localhost,127.0.0.1,::1"
+Environment="no_proxy=localhost,127.0.0.1,::1,api.noctalia.dev"
+Environment="NO_PROXY=localhost,127.0.0.1,::1,api.noctalia.dev"
 EOF
         systemctl daemon-reload
         systemctl restart nix-daemon.service
@@ -33,8 +33,8 @@ export http_proxy=http://127.0.0.1:${proxyPort}
 export https_proxy=http://127.0.0.1:${proxyPort}
 export HTTP_PROXY=http://127.0.0.1:${proxyPort}
 export HTTPS_PROXY=http://127.0.0.1:${proxyPort}
-export no_proxy=localhost,127.0.0.1,::1
-export NO_PROXY=localhost,127.0.0.1,::1
+export no_proxy=localhost,127.0.0.1,::1,api.noctalia.dev
+export NO_PROXY=localhost,127.0.0.1,::1,api.noctalia.dev
 EOF
         echo "proxy on — done"
         echo "  run: source $PROXY_ENV   (or open new terminal)"

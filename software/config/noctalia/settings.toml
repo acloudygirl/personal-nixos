@@ -12,7 +12,7 @@ order = [ "top", "left" ]
 
     [bar.top]
     center = [ "clock", "weather" ]
-    end = [ "audio-visualizer", "tray", "notifications", "battery", "volume", "brightness", "control-center", "session" ]
+    end = [ "audio-visualizer", "tray", "notifications", "performance-toggle", "volume", "brightness", "control-center", "session" ]
     font_family = "Noto Sans"
     margin_ends = 5
     capsule = true
@@ -113,9 +113,7 @@ capsule = true
 hide_when_no_unread = true
 capsule = true
 
-[widget.battery]
-display_mode = "graphic"
-show_label = false
+[widget.performance-toggle]
 capsule = true
 
 [widget.volume]
