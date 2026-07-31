@@ -244,10 +244,26 @@ in
       programs.fish = {
         enable = true;
         interactiveShellInit = ''
+          # proxy
+          test -f /etc/proxy.env && source /etc/proxy.env
+
+          # fzf + fd
           set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
           set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
           set -gx FZF_ALT_C_COMMAND "fd --type d --hidden --follow --exclude .git"
         '';
+        functions = {
+          restart = ''
+            if test (count $argv) -eq 0
+              echo "用法: restart <进程名> [参数...]"
+              return 1
+            end
+            pkill -f "$argv[1]"
+            sleep 1
+            $argv &>/dev/null &
+            disown
+          '';
+        };
       };
 
       programs.direnv = {
@@ -262,6 +278,11 @@ in
       };
 
       programs.fzf = {
+        enable = true;
+        enableFishIntegration = true;
+      };
+
+      programs.starship = {
         enable = true;
         enableFishIntegration = true;
       };

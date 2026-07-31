@@ -45,7 +45,7 @@ def request_url(url: str, timeout: int) -> bytes:
 
 def fetch_json(url: str, timeout: int) -> Any:
     data = request_url(url, timeout)
-    return json.loads(data.decode("utf-8"))
+    return json.loads(data.de("utf-8"))
 
 
 def read_json_file(path: Path) -> Any:
@@ -79,7 +79,7 @@ def output_name(card: dict[str, Any], variant: str) -> str:
 
 
 def is_missing_error(exc: BaseException) -> bool:
-    return isinstance(exc, HTTPError) and exc.code in {403, 404}
+    return isinstance(exc, HTTPError) and exc. in {403, 404}
 
 
 def download_png(

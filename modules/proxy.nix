@@ -81,7 +81,7 @@ in
     Defaults env_keep += "http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY"
   '';
 
-  # root's .bashrc also sources proxy.env so "su -" and login shells get it
+  # bash 兜底：login shell 加载 proxy
   programs.bash.interactiveShellInit = ''
     [ -f /etc/proxy.env ] && source /etc/proxy.env
   '';

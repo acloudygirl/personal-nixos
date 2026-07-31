@@ -39,6 +39,7 @@ in
     ripgrep
     direnv
     fish
+    starship
     tree #linux-shell tree
     file #linux-shell filew
 
