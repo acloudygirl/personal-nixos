@@ -3,6 +3,8 @@
 {
   environment.shellAliases = {
     nixrs = "git -C /home/cloudygirl/nixos add -A && nh os switch";
-    ncg = "sudo nix-collect-garbage -d";
+    ncg = "nh clean all";
+    rollback = "nh os rollback";
+    nixinfo = "nh os info";
   };
 }
