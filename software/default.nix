@@ -241,6 +241,31 @@ in
         systemd.enable = true;
       };
 
+      programs.fish = {
+        enable = true;
+        interactiveShellInit = ''
+          set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
+          set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
+          set -gx FZF_ALT_C_COMMAND "fd --type d --hidden --follow --exclude .git"
+        '';
+      };
+
+      programs.direnv = {
+        enable = true;
+        enableFishIntegration = true;
+        nix-direnv.enable = true;
+      };
+
+      programs.zoxide = {
+        enable = true;
+        enableFishIntegration = true;
+      };
+
+      programs.fzf = {
+        enable = true;
+        enableFishIntegration = true;
+      };
+
       xdg.configFile."noctalia/config.json".source =
         ./config/noctalia/noctalia-base-settings-v4.json;
 

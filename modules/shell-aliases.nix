@@ -15,7 +15,8 @@
       fi
       pkill -f "$1"
       sleep 1
-      nohup "$@" >/dev/null 2>&1 &
+      "$@" &>/dev/null &
+      disown
     }
   '';
 }

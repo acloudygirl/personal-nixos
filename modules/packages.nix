@@ -31,12 +31,20 @@ in
 {
   # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
+    #终端优化
+    zoxide
+    nh
+    fd
+    fzf
+    ripgrep
+    direnv
+    fish
     tree #linux-shell tree
     file #linux-shell filew
+
     procps # pkill/pstree 等进程工具
     bitwarden-cli #密码库
     jq
-    fzf
 
     fastfetch
     # 版本控制
@@ -106,6 +114,7 @@ in
     go-musicfox #网易云音乐
     opencode #AI
     opencode-desktop
+    nh
     mcp-nixos
     github-mcp-server #GitHub MCP 服务
     wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
