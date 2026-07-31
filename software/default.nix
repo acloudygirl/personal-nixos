@@ -1,8 +1,6 @@
 { lib, pkgs, noctalia, zen-browser, ... }:
 
 let
-  inherit (lib) genAttrs;
-
   chromeProxyAuto = pkgs.writeShellScriptBin "chrome-proxy-auto" ''
     for _ in $(seq 1 20); do
       if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
@@ -19,213 +17,19 @@ let
       --host-resolver-rules='MAP * ~NOTFOUND , EXCLUDE 127.0.0.1' \
       "$@"
   '';
-
-  chrome = "google-chrome.desktop";
-  code = "code.desktop";
-  thunar = "thunar.desktop";
-  gwenview = "org.kde.gwenview.desktop";
-  ark = "org.kde.ark.desktop";
-  haruna = "org.kde.haruna.desktop";
-  elisa = "org.kde.elisa.desktop";
-  marktext = "marktext.desktop";
-  sioyek = "sioyek.desktop";
-  writer = "writer.desktop";
-  calc = "calc.desktop";
-  impress = "impress.desktop";
-  telegram = "org.telegram.desktop.desktop";
-
-  codeTypes = [
-    "application/javascript"
-    "application/json"
-    "application/schema+json"
-    "application/toml"
-    "application/x-nix"
-    "application/x-shellscript"
-    "application/x-yaml"
-    "application/xml"
-    "text/css"
-    "text/javascript"
-    "text/plain"
-    "text/x-c"
-    "text/x-c++"
-    "text/x-c++hdr"
-    "text/x-c++src"
-    "text/x-chdr"
-    "text/x-cmake"
-    "text/x-csrc"
-    "text/x-java"
-    "text/x-log"
-    "text/x-makefile"
-    "text/x-nix"
-    "text/x-python"
-    "text/x-shellscript"
-    "text/x-toml"
-    "text/x-yaml"
-    "text/xml"
-    "text/yaml"
-  ];
-
-  imageTypes = [
-    "application/x-krita"
-    "image/avif"
-    "image/bmp"
-    "image/gif"
-    "image/heif"
-    "image/jpeg"
-    "image/jxl"
-    "image/openraster"
-    "image/png"
-    "image/svg+xml"
-    "image/svg+xml-compressed"
-    "image/tiff"
-    "image/webp"
-    "image/x-icns"
-    "image/x-ico"
-    "image/x-portable-bitmap"
-    "image/x-portable-graymap"
-    "image/x-portable-pixmap"
-    "image/x-psd"
-    "image/x-tga"
-    "image/x-webp"
-    "image/x-xbitmap"
-    "image/x-xcf"
-    "image/x-xpixmap"
-  ];
-
-  archiveTypes = [
-    "application/arj"
-    "application/gzip"
-    "application/vnd.debian.binary-package"
-    "application/vnd.ms-cab-compressed"
-    "application/vnd.rar"
-    "application/x-7z-compressed"
-    "application/x-archive"
-    "application/x-arj"
-    "application/x-bzip"
-    "application/x-bzip-compressed-tar"
-    "application/x-bzip2"
-    "application/x-bzip2-compressed-tar"
-    "application/x-compress"
-    "application/x-compressed-tar"
-    "application/x-cpio"
-    "application/x-deb"
-    "application/x-java-archive"
-    "application/x-lrzip"
-    "application/x-lrzip-compressed-tar"
-    "application/x-lz4"
-    "application/x-lz4-compressed-tar"
-    "application/x-lzip"
-    "application/x-lzip-compressed-tar"
-    "application/x-lzma"
-    "application/x-lzma-compressed-tar"
-    "application/x-lzop"
-    "application/x-rpm"
-    "application/x-tar"
-    "application/x-xz"
-    "application/x-xz-compressed-tar"
-    "application/x-zstd-compressed-tar"
-    "application/zip"
-    "application/zstd"
-  ];
-
-  audioTypes = [
-    "application/ogg"
-    "application/x-ogm-audio"
-    "audio/aac"
-    "audio/flac"
-    "audio/mp4"
-    "audio/mpeg"
-    "audio/ogg"
-    "audio/vorbis"
-    "audio/x-flac"
-    "audio/x-flac+ogg"
-    "audio/x-mp3"
-    "audio/x-mpegurl"
-    "audio/x-ms-wma"
-    "audio/x-opus+ogg"
-    "audio/x-scpls"
-    "audio/x-vorbis"
-    "audio/x-vorbis+ogg"
-    "audio/x-wav"
-  ];
-
-  videoTypes = [
-    "video/mp2t"
-    "video/mp4"
-    "video/mpeg"
-    "video/ogg"
-    "video/quicktime"
-    "video/webm"
-    "video/x-flv"
-    "video/x-matroska"
-    "video/x-ms-wmv"
-    "video/x-msvideo"
-  ];
-
-  mimeDefaults = {
-    # Web
-    "x-scheme-handler/http" = chrome;
-    "x-scheme-handler/https" = chrome;
-    "text/html" = chrome;
-    "x-scheme-handler/tg" = telegram;
-    "x-scheme-handler/tonsite" = telegram;
-
-    # Files and directories
-    "inode/directory" = thunar;
-
-    # Markdown
-    "text/markdown" = marktext;
-    "text/x-markdown" = marktext;
-
-    # PDF
-    "application/pdf" = sioyek;
-
-    # Office documents
-    "application/msword" = writer;
-    "application/vnd.ms-word" = writer;
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = writer;
-    "application/vnd.ms-word.document.macroEnabled.12" = writer;
-    "application/rtf" = writer;
-    "text/rtf" = writer;
-    "application/vnd.oasis.opendocument.text" = writer;
-
-    "application/vnd.ms-excel" = calc;
-    "application/msexcel" = calc;
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = calc;
-    "application/vnd.ms-excel.sheet.macroEnabled.12" = calc;
-    "text/csv" = calc;
-    "application/vnd.oasis.opendocument.spreadsheet" = calc;
-
-    "application/vnd.ms-powerpoint" = impress;
-    "application/mspowerpoint" = impress;
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation" = impress;
-    "application/vnd.openxmlformats-officedocument.presentationml.slideshow" = impress;
-    "application/vnd.oasis.opendocument.presentation" = impress;
-
-    # E-books and comics
-    "application/epub+zip" = "okularApplication_epub.desktop";
-    "application/x-cb7" = "okularApplication_comicbook.desktop";
-    "application/x-cbr" = "okularApplication_comicbook.desktop";
-    "application/x-cbt" = "okularApplication_comicbook.desktop";
-    "application/x-cbz" = "okularApplication_comicbook.desktop";
-  }
-  // genAttrs codeTypes (_: code)
-  // genAttrs imageTypes (_: gwenview)
-  // genAttrs archiveTypes (_: ark)
-  // genAttrs audioTypes (_: elisa)
-  // genAttrs videoTypes (_: haruna);
-
 in
-
 {
-  # Chrome 代理策略由 nix-proxy-on / nix-proxy-off 动态管理
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
 
     users.cloudygirl = { config, ... }: {
-      imports = [ noctalia.homeModules.default ];
+      imports = [
+        noctalia.homeModules.default
+        ./shell.nix
+        ./apps.nix
+        ./mime.nix
+      ];
 
       home.stateVersion = "26.05";
 
@@ -241,75 +45,8 @@ in
         systemd.enable = true;
       };
 
-      programs.fish = {
-        enable = true;
-        interactiveShellInit = ''
-          # proxy
-          test -f /etc/proxy.env && source /etc/proxy.env
-
-          # fzf + fd
-          set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
-          set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
-          set -gx FZF_ALT_C_COMMAND "fd --type d --hidden --follow --exclude .git"
-        '';
-        functions = {
-          restart = ''
-            if test (count $argv) -eq 0
-              echo "用法: restart <进程名> [参数...]"
-              return 1
-            end
-            pkill -f "$argv[1]"
-            sleep 1
-            $argv &>/dev/null &
-            disown
-          '';
-        };
-      };
-
-      programs.direnv = {
-        enable = true;
-        enableFishIntegration = true;
-        nix-direnv.enable = true;
-      };
-
-      programs.zoxide = {
-        enable = true;
-        enableFishIntegration = true;
-      };
-
-      programs.fzf = {
-        enable = true;
-        enableFishIntegration = true;
-      };
-
-      programs.starship = {
-        enable = true;
-        enableFishIntegration = true;
-      };
-
       xdg.configFile."noctalia/config.json".source =
         ./config/noctalia/noctalia-base-settings-v4.json;
-
-      programs.google-chrome = {
-        enable = true;
-        commandLineArgs = [
-          "--enable-experimental-web-platform-features"
-          "--enable-features=AcceleratedVideoDecodeLinuxGL"
-        ];
-      };
-
-      programs.firefox = {
-        enable = true;
-        profiles.main = {
-          id = 0;
-          isDefault = true;
-          settings = {
-            "sidebar.verticalTabs" = true;
-            "browser.search.openintab" = true;
-            "browser.urlbar.openintab" = true;
-          };
-        };
-      };
 
       systemd.user.services.polkit-kde-agent = {
         Unit = {
@@ -324,17 +61,10 @@ in
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      xdg.configFile."niri/config.kdl" = {
-        source = ./config/niri/config.kdl;
-        force = true;
-      };
-      xdg.configFile."kitty/kitty.conf" = {
-        source = ./config/kitty/kitty.conf;
-        force = true;
-      };
       xdg.dataFile."applications/wps-office-wps.desktop".source = ./config/wps-desktop/wps-office-wps.desktop;
       xdg.dataFile."applications/wps-office-et.desktop".source = ./config/wps-desktop/wps-office-et.desktop;
       xdg.dataFile."applications/wps-office-wpp.desktop".source = ./config/wps-desktop/wps-office-wpp.desktop;
+
       xdg.configFile."Thunar/uca.xml".text = ''
         <?xml version="1.0" encoding="UTF-8"?>
         <actions>
@@ -365,39 +95,6 @@ in
         </actions>
       '';
 
-      xdg.mimeApps = {
-        enable = true;
-        associations.added = mimeDefaults // {
-          "inode/directory" = thunar;
-          "application/pdf" = [
-            sioyek
-            "okularApplication_pdf.desktop"
-          ];
-          "image/png" = [
-            gwenview
-            "okularApplication_kimgio.desktop"
-            chrome
-          ];
-          "image/jpeg" = [
-            gwenview
-            "okularApplication_kimgio.desktop"
-            chrome
-          ];
-          "text/markdown" = [
-            marktext
-            "okularApplication_md.desktop"
-            code
-          ];
-          "text/plain" = [
-            code
-            "Helix.desktop"
-          ];
-        };
-        defaultApplications = mimeDefaults;
-      };
-
-      # Some desktops consult desktop-specific MIME files before the generic one.
-      # Keep those entries linked to Home Manager's generated mimeapps.list.
       xdg.configFile."kde-mimeapps.list".source =
         config.xdg.configFile."mimeapps.list".source;
       xdg.configFile."niri-mimeapps.list".source =
