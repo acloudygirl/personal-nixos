@@ -4,6 +4,7 @@ let
 
   proxyToggle = pkgs.writeShellScriptBin "proxy" ''
     set -euo pipefail
+    ORIG_USER="''${SUDO_USER:-$(id -un)}"
 
     if [ "$(id -u)" -ne 0 ]; then
       exec sudo "$0" "$@"
@@ -12,6 +13,47 @@ let
     DROPIN_DIR=/run/systemd/system/nix-daemon.service.d
     DROPIN="$DROPIN_DIR/10-proxy.conf"
     PROXY_ENV=/etc/proxy.env
+    PROXY_IGNORE="localhost,127.0.0.0/8,::1,api.noctalia.dev"
+
+    find_kwriteconfig() {
+      if command -v kwriteconfig6 >/dev/null 2>&1; then
+        command -v kwriteconfig6
+      elif command -v kwriteconfig5 >/dev/null 2>&1; then
+        command -v kwriteconfig5
+      else
+        echo ""
+      fi
+    }
+
+    set_kde_manual() {
+      local kc
+      kc="$(find_kwriteconfig)"
+      [ -n "$kc" ] || return 0
+      # 普通用户
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 1
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy "http://127.0.0.1:${proxyPort}"
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy "http://127.0.0.1:${proxyPort}"
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy "http://127.0.0.1:${proxyPort}"
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy "socks://127.0.0.1:${proxyPort}"
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor "$PROXY_IGNORE"
+      sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
+      # root
+      "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 1
+      "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy "http://127.0.0.1:${proxyPort}"
+      "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy "http://127.0.0.1:${proxyPort}"
+      "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy "http://127.0.0.1:${proxyPort}"
+      "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy "socks://127.0.0.1:${proxyPort}"
+      "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor "$PROXY_IGNORE"
+    }
+
+    set_kde_direct() {
+      local kc
+      kc="$(find_kwriteconfig)"
+      [ -n "$kc" ] || return 0
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 0
+      sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
+      "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 0
+    }
 
     case "''${1:-}" in
       on)
@@ -36,8 +78,8 @@ export HTTPS_PROXY=http://127.0.0.1:${proxyPort}
 export no_proxy=localhost,127.0.0.1,::1,api.noctalia.dev
 export NO_PROXY=localhost,127.0.0.1,::1,api.noctalia.dev
 EOF
+        set_kde_manual
         echo "proxy on — done"
-        echo "  run: source $PROXY_ENV   (or open new terminal)"
         ;;
 
       off)
@@ -47,8 +89,8 @@ EOF
         systemctl restart nix-daemon.service
 
         rm -f "$PROXY_ENV"
+        set_kde_direct
         echo "proxy off — done"
-        echo "  run: unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY"
         ;;
 
       status)

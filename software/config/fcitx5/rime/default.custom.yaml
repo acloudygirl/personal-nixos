@@ -1,0 +1,97 @@
+# Rime 默认配置
+# 修改后按 Ctrl+Alt+` 重新部署
+
+patch:
+  # 候选词个数
+  menu/page_size: 9
+
+  # 按拼音字母排序
+  menu/alternative_select_labels: "123456789"
+
+  # 切换输入法快捷键
+  ascii_composer/switch_key:
+    Shift_L: commit_code
+    Shift_R: inline_ascii
+
+  # 模糊拼音（常见混淆音）
+  speller/algebra:
+    - erase/^xx$/
+    # 平翘舌
+    - derive/^([zcs])h/$1/
+    - derive/^([zcs])([^h])/$1h$2/
+    # 前后鼻音
+    - derive/^an$/ang/
+    - derive/^ang$/an/
+    - derive/^en$/eng/
+    - derive/^eng$/en/
+    - derive/^in$/ing/
+    - derive/^ing$/in/
+    # n/l 不分
+    - derive/^([nl])a$/$1a/
+    - derive/^([nl])e$/$1e/
+    - derive/^([nl])i$/$1i/
+    - derive/^([nl])o$/$1o/
+    - derive/^([nl])u$/$1u/
+    # r/l 不分
+    - derive/^ren$/len/
+    - derive/^re$/le/
+
+  # 按键绑定
+  key_binder/bindings:
+    - { accept: comma, send: comma, when: composing }
+    - { accept: period, send: period, when: composing }
+
+  # 输入方案列表
+  schema_list:
+    - schema: luna_pinyin
+    - schema: emoji
+
+  # Emoji 建议（输入中文时自动联想 emoji）
+  switches/@next:
+    name: emoji_suggestion
+    reset: 1
+    states: [ "🈚︎", "🈶️" ]
+
+  engine/filters/@before 0:
+    simplifier@emoji_suggestion
+
+  emoji_suggestion:
+    opencc_config: emoji.json
+    option_name: emoji_suggestion
+    tips: none
+    inherit_comment: false
+
+  # 词典引擎
+  translator:
+    dictionary: luna_pinyin
+    enable_charset_filter: false
+    enable_completion: true
+    enable_encoder: true
+    enable_sentence: true
+    enable_user_dict: true
+    enable_word_delete: true
+    encode_commit_history: true
+    max_phrase_length: 8
+    max_user_phrase_length: 32
+
+  # 用户词典
+  user_dict:
+    auto_sync: true
+    enable_completion: true
+    max_history_size: 10000
+    max_phrase_length: 8
+
+  # 分词
+  segmentation:
+    allow_all_shuaiping: true
+
+  # 标点符号
+  punctuator:
+    import_preset: default
+
+  # 候选词修饰
+  ascii_composer:
+    good_old_caps_lock: true
+    switch_key:
+      Shift_L: commit_code
+      Shift_R: inline_ascii

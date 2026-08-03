@@ -1,0 +1,31 @@
+# Rime Emoji 输入方案
+# 直接输入 emoji 名称（如 "xiaolian"、"xihuan"）
+# 按 Ctrl+Alt+` 重新部署
+
+schema:
+  schema_id: emoji
+  name: Emoji
+  version: "1.0"
+  description: "Emoji 表情输入方案"
+
+speller:
+  alphabet: "zyxwvutsrqponmlkjihgfedcba"
+  delimiter: "'"
+  max_code_length: 50
+
+translator:
+  dictionary: emoji
+  enable_completion: true
+  enable_sentence: false
+  enable_user_dict: false
+
+encoder:
+  exclude_patterns:
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  bindings:
+    - { accept: comma, send: comma, when: composing }
+    - { accept: period, send: period, when: composing }

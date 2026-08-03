@@ -1,0 +1,14 @@
+# 自定义词库
+# 格式: 词语\t拼音\t词频（可选）
+# 修改后按 Ctrl+Alt+` 重新部署
+---
+name: luna_pinyin.custom
+version: "1.0"
+sort: by_weight
+...
+
+NixOS	nixos	300
+nixpkgs	nixpkgs	200
+Home Manager	home manager	150
+flake	flake	200
+rebuild	rebuild	150

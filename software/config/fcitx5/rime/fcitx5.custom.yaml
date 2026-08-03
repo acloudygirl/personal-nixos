@@ -1,0 +1,18 @@
+# Fcitx5 Rime 配置
+# 修改后按 Ctrl+Alt+` 重新部署
+
+patch:
+  # 字体设置
+  style/font_face: "Noto Sans CJK SC"
+  style/font_point: 14
+  style/candidate_format: "%s\u3002"
+
+  # 候选词面板样式
+  style/horizontal: true
+
+  # 布局
+  layout/border_width: 1
+  layout/corner_radius: 6
+  layout/vertical: 3
+  layout/horizontal: 3
+  layout/memorize_size: true

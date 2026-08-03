@@ -1,0 +1,29 @@
+# luna_pinyin 自定义配置
+# 修改后按 Ctrl+Alt+` 重新部署
+
+patch:
+  # 使用完整标点符号集
+  punctuator/import_preset: default
+
+  # 自动选词阈值（0-9，越大越不容易自动选词）
+  translator/auto_select: false
+  translator/auto_select_unique_candidate: true
+
+  # 整句输入模式（更智能的整句预测）
+  translator/enable_sentence: true
+  translator/enable_completion: true
+
+  # 候选词提示：显示拼音
+  menu/show_labels: true
+
+  # 词频调整
+  translator/initial_quality: 1.25
+
+  # 词条扩展
+  translator/extra_cards:
+    - Tag: prepackaged
+      Cards:
+        - Text: "NixOS"
+          Weight: 200
+        - Text: "nix"
+          Weight: 150

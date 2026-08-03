@@ -22,6 +22,32 @@
     };
   };
 
+  # Rime 输入法配置
+  xdg.dataFile."fcitx5/rime/default.custom.yaml" = {
+    source = ./config/fcitx5/rime/default.custom.yaml;
+    force = true;
+  };
+  xdg.dataFile."fcitx5/rime/luna_pinyin.custom.yaml" = {
+    source = ./config/fcitx5/rime/luna_pinyin.custom.yaml;
+    force = true;
+  };
+  xdg.dataFile."fcitx5/rime/luna_pinyin.custom.dict.yaml" = {
+    source = ./config/fcitx5/rime/luna_pinyin.custom.dict.yaml;
+    force = true;
+  };
+  xdg.dataFile."fcitx5/rime/fcitx5.custom.yaml" = {
+    source = ./config/fcitx5/rime/fcitx5.custom.yaml;
+    force = true;
+  };
+  xdg.dataFile."fcitx5/rime/emoji.schema.yaml" = {
+    source = ./config/fcitx5/rime/emoji.schema.yaml;
+    force = true;
+  };
+  xdg.dataFile."fcitx5/rime/emoji.dict.yaml" = {
+    source = ./config/fcitx5/rime/emoji.dict.yaml;
+    force = true;
+  };
+
   xdg.configFile."niri/config.kdl" = {
     source = ./config/niri/config.kdl;
     force = true;
