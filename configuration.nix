@@ -8,10 +8,10 @@
     ./modules/hardware-tweaks.nix
     ./modules/locale.nix
     ./modules/networking.nix
+    ./modules/nvidia.nix
     ./modules/nix-settings.nix
     ./modules/packages.nix
     ./modules/qq-fix.nix
-    ./modules/minecraft.nix
     ./modules/power.nix
     ./modules/proxy-tools.nix
     ./modules/proxy.nix

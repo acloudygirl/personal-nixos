@@ -2,7 +2,6 @@
 
 {
   # 内核和底层设备调整
-  boot.kernelParams = [ "nouveau.modeset=0" ];
 
   services.udev.extraRules = ''
     ACTION=="add|change", SUBSYSTEM=="leds", KERNEL=="asus::kbd_backlight", ATTR{brightness}="3"

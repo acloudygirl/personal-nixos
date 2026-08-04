@@ -18,7 +18,7 @@
 
   services.displayManager.sddm.enable = true;
 
-  services.xserver.videoDrivers = [ "modesetting" ];
+  services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
 
   # Flatpak 支持和 Flathub 远程仓库自动配置。
   programs.steam.enable = true;   #自动拉取steam32位库
