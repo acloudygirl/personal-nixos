@@ -9,7 +9,10 @@ let
     postBuild = ''
       rm "$out/bin/qq"
       makeWrapper "${pkgs.qq}/bin/qq" "$out/bin/qq" \
-        --unset NIXOS_OZONE_WL
+        --unset NIXOS_OZONE_WL \
+        --set QT_IM_MODULE fcitx \
+        --set GTK_IM_MODULE fcitx \
+        --set XMODIFIERS "@im=fcitx"
 
       # 修正 desktop 入口指向新 wrapper
       rm "$out/share/applications/qq.desktop"

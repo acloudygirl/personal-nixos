@@ -32,4 +32,11 @@
     EDITOR = "hx";
     VISUAL = "hx";
   };
+
+  # 自动垃圾回收：每周清理旧 generation 和 store，防止磁盘占满
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
 }

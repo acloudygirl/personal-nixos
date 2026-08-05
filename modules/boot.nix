@@ -9,6 +9,8 @@
       devices = [ "nodev" ];
       efiSupport = true;
       useOSProber = true;
+      # 限制 GRUB 菜单中的内核数量，防止 /boot 空间耗尽
+      configurationLimit = 5;
     };
   };
 }
