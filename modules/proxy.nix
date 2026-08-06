@@ -29,7 +29,6 @@ let
       local kc
       kc="$(find_kwriteconfig)"
       [ -n "$kc" ] || return 0
-      # 普通用户
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 1
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy "http://127.0.0.1:${proxyPort}"
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy "http://127.0.0.1:${proxyPort}"
@@ -37,13 +36,6 @@ let
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy "socks://127.0.0.1:${proxyPort}"
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor "$PROXY_IGNORE"
       sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
-      # root
-      "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 1
-      "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy "http://127.0.0.1:${proxyPort}"
-      "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy "http://127.0.0.1:${proxyPort}"
-      "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy "http://127.0.0.1:${proxyPort}"
-      "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy "socks://127.0.0.1:${proxyPort}"
-      "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor "$PROXY_IGNORE"
     }
 
     set_kde_direct() {
@@ -51,8 +43,12 @@ let
       kc="$(find_kwriteconfig)"
       [ -n "$kc" ] || return 0
       sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 0
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy ""
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy ""
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy ""
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy ""
+      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor ""
       sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
-      "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 0
     }
 
     case "''${1:-}" in
