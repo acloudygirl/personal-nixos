@@ -2,7 +2,7 @@
 
 let
   # Markdown 转 PDF
-  # .md文件转化为.pdf命令缩减：mdpdf note.md [output.pdf]
+  # 用法：mdpdf note.md [output.pdf]
   mdpdf = pkgs.writeShellScriptBin "mdpdf" ''
     set -euo pipefail
 
@@ -26,12 +26,55 @@ let
       -d ${../notes/template/pandoc.yaml} \
       -o "$output"
   '';
+
+  # 视频自动生成字幕
+  # 用法：autosub 视频文件.mp4 [语言] [模型]
+  # 语言默认 zh（中文），可选 en/ja 等
+  # 模型默认 small，可选 tiny/base/small/medium/large-v3
+  autosub = pkgs.writeShellScriptBin "autosub" ''
+    set -euo pipefail
+
+    if [ "$#" -lt 1 ]; then
+      echo "Usage: autosub VIDEO [LANG] [MODEL]" >&2
+      echo "  LANG:   zh(默认), en, ja, ko, ..." >&2
+      echo "  MODEL:  tiny, base, small(默认), medium, large-v3" >&2
+      exit 2
+    fi
+
+    input="$(${pkgs.coreutils}/bin/realpath "$1")"
+    lang="''${2:-zh}"
+    model="''${3:-small}"
+
+    model_dir="$HOME/.cache/whisper-cpp"
+    model_file="$model_dir/ggml-$model.bin"
+
+    if [ ! -f "$model_file" ]; then
+      echo "Downloading model: $model ..." >&2
+      ${pkgs.coreutils}/bin/mkdir -p "$model_dir"
+      ${pkgs.wget}/bin/wget -q -O "$model_file" \
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-$model.bin"
+    fi
+
+    workdir="$(${pkgs.coreutils}/bin/dirname "$input")"
+    filename="$(${pkgs.coreutils}/bin/basename "$input")"
+    name="''${filename%.*}"
+
+    tmpdir="$(${pkgs.coreutils}/bin/mktemp -d)"
+    ${pkgs.ffmpeg}/bin/ffmpeg -i "$input" -vn -acodec pcm_s16le -ar 16000 -ac 1 "$tmpdir/audio.wav" -y -loglevel error
+
+    echo "Generating subtitles (model: $model, lang: $lang) ..." >&2
+    ${pkgs.whisper-cpp}/bin/whisper-cpp -m "$model_file" -f "$tmpdir/audio.wav" -l "$lang" -osrt -o "$tmpdir"
+
+    ${pkgs.coreutils}/bin/cp "$tmpdir/audio.srt" "$workdir/$name.srt"
+    ${pkgs.coreutils}/bin/rm -rf "$tmpdir"
+
+    echo "Done: $workdir/$name.srt" >&2
+  '';
 in
 
 {
-  # 全系统命令行工具、桌面应用和开发工具链
   environment.systemPackages = with pkgs; [
-    #终端优化
+    # ── 终端工具 ──
     zoxide
     nh
     fd
@@ -40,32 +83,34 @@ in
     direnv
     fish
     starship
-    tree #linux-shell tree
-    file #linux-shell filew
-
-    procps # pkill/pstree 等进程工具
-    bitwarden-cli #密码库
+    tree
+    file
     jq
-
+    wget
+    procps
     fastfetch
-    # 版本控制
+    bitwarden-cli
+
+    # ── 版本控制 ──
     git
     gnumake
     tmux
-    # md-pdf转换命令
+
+    # ── 自定义脚本 ──
     mdpdf
-    fastfetch
-    #梯子
+    autosub
+
+    # ── 梯子 ──
     v2rayn
     sing-box
 
-    # Python
+    # ── Python ──
     python3
     uv
     ruff
     pyright
 
-    # C 和 C++
+    # ── C/C++ ──
     gcc
     clang
     clang-tools
@@ -74,70 +119,74 @@ in
     gdb
     lldb
 
-    # Rust
+    # ── Rust ──
     rustc
     cargo
     rust-analyzer
     rustfmt
     clippy
 
-    # 文件管理器
+    # ── 文件管理 ──
     thunar
     thunar-volman
     gvfs
-
-    #软件提权工具
     lxqt.lxqt-policykit
 
-    # 蓝牙工具
+    # ── 蓝牙 ──
     bluez
     bluez-tools
     kdePackages.bluedevil
 
-    # 桌面应用
-    #kdePackages.konsole    #KED命令行
+    # ── 桌面应用 ──
     kdePackages.polkit-kde-agent-1
     google-chrome
     home-manager
     nodejs_22
     vscode
-    # qq 由 modules/qq-fix.nix 提供包装版本，修复 Wayland 剪贴板
     wechat
     wpsoffice-cn
-    helix #.nix文件编辑器，nano替代
-    kdePackages.gwenview # 图片查看器
-    kdePackages.elisa # 音乐播放器
-    marktext # Markdown 阅读器
-    sioyek # PDF 阅读器
-    pandoc # Markdown 转 PDF
-    texliveFull #md转pdf渲染库
-    codex
-    go-musicfox #网易云音乐
-    lunar-client #Lunar Client Minecraft客户端
-    opencode #AI
-    opencode-desktop
-    nh
-    mcp-nixos
-    github-mcp-server #GitHub MCP 服务
-    wl-clipboard #Wayland 剪贴板工具（noctalia 依赖）
-    cliphist #剪贴板历史（noctalia 依赖）
-    qalculate-qt #科学计算器
-    calibre #电子书管理
-    geary #邮箱
-    anki #记忆卡片
-    flameshot #截图标注
-    goldendict-ng #轻量翻译软件
+    helix
 
-    #压缩软件
+    # ── 多媒体 ──
+    kdePackages.gwenview
+    kdePackages.elisa
+    go-musicfox
+    flameshot
+
+    # ── 阅读/文档 ──
+    marktext
+    sioyek
+    pandoc
+    texliveFull
+    calibre
+    anki
+
+    # ── 视频播放 ──
+    mpv
+    haruna
+
+    # ── 字幕生成 ──
+    whisper-cpp
+    ffmpeg
+
+    # ── AI ──
+    codex
+    opencode
+    opencode-desktop
+    mcp-nixos
+    github-mcp-server
+
+    # ── 工具 ──
+    lunar-client
+    wl-clipboard
+    cliphist
+    qalculate-qt
+    geary
+    goldendict-ng
     kdePackages.ark
     p7zip
     unzip
     zip
     unrar
-    #视频播放
-    mpv
-    vlc
-    celluloid  # GTK 前端
-    haruna # 视频播放器
   ];
 }
