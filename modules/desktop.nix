@@ -20,6 +20,18 @@
 
   services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
 
+  # 音频：显式启用 PipeWire 全栈，确保 pactl/pavucontrol 可用
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
+  environment.systemPackages = with pkgs; [
+    pavucontrol    # 图形化音量控制，可切换输出设备
+  ];
+
   # Flatpak 支持和 Flathub 远程仓库自动配置。
   programs.steam.enable = true;   #自动拉取steam32位库
   services.flatpak.enable = true;
