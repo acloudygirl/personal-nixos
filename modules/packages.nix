@@ -90,6 +90,7 @@ in
     procps
     fastfetch
     bitwarden-cli
+    android-tools
 
     # ── 版本控制 ──
     git
@@ -177,6 +178,7 @@ in
     github-mcp-server
 
     # ── 工具 ──
+    ttyd
     lunar-client
     wl-clipboard
     cliphist
