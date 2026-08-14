@@ -91,6 +91,7 @@ in
     fastfetch
     bitwarden-cli
     android-tools
+    pnpm
 
     # ── 版本控制 ──
     git
