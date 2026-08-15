@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   # Wayland 兼容性：启用 Xwayland，并让 Electron/Chromium 类应用优先使用原生 Wayland 后端
@@ -16,6 +16,8 @@
   ];
   programs.niri.enable = true;
 
+  # niri 为主桌面：明确默认会话，避免与 plasma6 的 defaultSession 冲突
+  services.displayManager.defaultSession = lib.mkForce "niri";
   services.displayManager.sddm.enable = true;
 
   services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
