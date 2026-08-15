@@ -1,18 +1,11 @@
 { config, lib, pkgs, ... }:
 
-let
-  # clash-verge-rev 2.5.2：修复 NixOS 上的"内核通信错误" UI bug（上游 issue #7316）。
-  # 当前 nixpkgs 锁定 2.5.1，这里通过本地复刻的 package 定义升级到 2.5.2，
-  # 依赖（webkitgtk/mihomo/pnpm_11）在当前 nixpkgs 中均可用，不触发大更新。
-  clash-verge-rev = pkgs.callPackage ../pkgs/clash-verge-rev/package.nix { };
-in
 {
   # Clash Verge Rev — 图形代理客户端
   # 已导入订阅后开启 TUN：serviceMode 让 root 运行的服务负责创建 TUN 网卡，
   # tunMode 给 GUI 授予额外 capabilities。
   programs.clash-verge = {
     enable = true;
-    package = clash-verge-rev;
     serviceMode = true;
     tunMode = true;
   };

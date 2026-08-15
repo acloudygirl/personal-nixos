@@ -144,7 +144,6 @@ in
     home-manager
     nodejs_22
     vscode
-    wechat
     wpsoffice-cn
     helix
 

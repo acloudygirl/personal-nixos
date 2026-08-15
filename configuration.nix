@@ -21,6 +21,12 @@
     ./modules/steam.nix
   ];
 
+  # Swap文件配置（8G）
+  swapDevices = [{
+    device = "/swapfile";
+    size = 8192;
+  }];
+
   # NixOS 版本兼容级别
   system.stateVersion = "26.11";
 }
