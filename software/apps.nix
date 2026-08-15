@@ -6,6 +6,8 @@
     commandLineArgs = [
       "--enable-experimental-web-platform-features"
       "--enable-features=AcceleratedVideoDecodeLinuxGL"
+      # Chrome 固定走 clash 混合代理端口（socks5）
+      "--proxy-server=socks5://127.0.0.1:7897"
     ];
   };
 
