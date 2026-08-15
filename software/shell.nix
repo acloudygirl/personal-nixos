@@ -4,9 +4,6 @@
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      # proxy
-      test -f /etc/proxy.env && source /etc/proxy.env
-
       # fzf + fd
       set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
       set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
@@ -22,6 +19,29 @@
         sleep 1
         $argv &>/dev/null &
         disown
+      '';
+
+      # 终端代理开关：终端不读 KDE 系统代理，需手动设环境变量
+      # 用法：proxy on / proxy off / proxy
+      proxy = ''
+        switch "$argv[1]"
+          case on
+            set -gx http_proxy http://127.0.0.1:7897
+            set -gx https_proxy http://127.0.0.1:7897
+            set -gx all_proxy socks5://127.0.0.1:7897
+            echo "终端代理已开启 (127.0.0.1:7897)"
+          case off
+            set -e http_proxy
+            set -e https_proxy
+            set -e all_proxy
+            echo "终端代理已关闭"
+          case '*'
+            if set -q http_proxy
+              echo "终端代理: ON ($http_proxy)"
+            else
+              echo "终端代理: OFF"
+            end
+        end
       '';
     };
   };

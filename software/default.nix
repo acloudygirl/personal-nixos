@@ -1,23 +1,5 @@
 { lib, pkgs, noctalia, zen-browser, ... }:
 
-let
-  chromeProxyAuto = pkgs.writeShellScriptBin "chrome-proxy-auto" ''
-    for _ in $(seq 1 20); do
-      if ${pkgs.iproute2}/bin/ss -ltn | ${pkgs.gnugrep}/bin/grep -q '127\.0\.0\.1:10808'; then
-        exec ${pkgs.google-chrome}/bin/google-chrome \
-          --proxy-server=socks5://127.0.0.1:10808 \
-          --host-resolver-rules='MAP * ~NOTFOUND , EXCLUDE 127.0.0.1' \
-          "$@"
-      fi
-      sleep 0.5
-    done
-
-    exec ${pkgs.google-chrome}/bin/google-chrome \
-      --proxy-server=socks5://127.0.0.1:10808 \
-      --host-resolver-rules='MAP * ~NOTFOUND , EXCLUDE 127.0.0.1' \
-      "$@"
-  '';
-in
 {
   home-manager = {
     useGlobalPkgs = true;
@@ -36,7 +18,6 @@ in
       home.packages = with pkgs; [
         xwayland-satellite
         kitty
-        chromeProxyAuto
         zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 

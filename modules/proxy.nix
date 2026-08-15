@@ -1,126 +1,47 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
+
 let
-  proxyPort = "10808";
-
-  proxyToggle = pkgs.writeShellScriptBin "proxy" ''
-    set -euo pipefail
-    ORIG_USER="''${SUDO_USER:-$(id -un)}"
-
-    if [ "$(id -u)" -ne 0 ]; then
-      exec sudo "$0" "$@"
-    fi
-
-    DROPIN_DIR=/run/systemd/system/nix-daemon.service.d
-    DROPIN="$DROPIN_DIR/10-proxy.conf"
-    PROXY_ENV=/etc/proxy.env
-    PROXY_IGNORE="localhost,127.0.0.0/8,::1,api.noctalia.dev"
-
-    find_kwriteconfig() {
-      if command -v kwriteconfig6 >/dev/null 2>&1; then
-        command -v kwriteconfig6
-      elif command -v kwriteconfig5 >/dev/null 2>&1; then
-        command -v kwriteconfig5
-      else
-        echo ""
-      fi
-    }
-
-    set_kde_manual() {
-      local kc
-      kc="$(find_kwriteconfig)"
-      [ -n "$kc" ] || return 0
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 1
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy "http://127.0.0.1:${proxyPort}"
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy "http://127.0.0.1:${proxyPort}"
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy "http://127.0.0.1:${proxyPort}"
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy "socks://127.0.0.1:${proxyPort}"
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor "$PROXY_IGNORE"
-      sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
-    }
-
-    set_kde_direct() {
-      local kc
-      kc="$(find_kwriteconfig)"
-      [ -n "$kc" ] || return 0
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ProxyType 0
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpProxy ""
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key httpsProxy ""
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key ftpProxy ""
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key socksProxy ""
-      sudo -u "$ORIG_USER" "$kc" --file kioslaverc --group "Proxy Settings" --key NoProxyFor ""
-      sudo -u "$ORIG_USER" dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:"" >/dev/null 2>&1 || true
-    }
-
-    case "''${1:-}" in
-      on)
-        mkdir -p "$DROPIN_DIR"
-        cat > "$DROPIN" <<'EOF'
-[Service]
-Environment="http_proxy=http://127.0.0.1:${proxyPort}"
-Environment="https_proxy=http://127.0.0.1:${proxyPort}"
-Environment="HTTP_PROXY=http://127.0.0.1:${proxyPort}"
-Environment="HTTPS_PROXY=http://127.0.0.1:${proxyPort}"
-Environment="no_proxy=localhost,127.0.0.1,::1,api.noctalia.dev"
-Environment="NO_PROXY=localhost,127.0.0.1,::1,api.noctalia.dev"
-EOF
-        systemctl daemon-reload
-        systemctl restart nix-daemon.service
-
-        cat > "$PROXY_ENV" <<EOF
-export http_proxy=http://127.0.0.1:${proxyPort}
-export https_proxy=http://127.0.0.1:${proxyPort}
-export HTTP_PROXY=http://127.0.0.1:${proxyPort}
-export HTTPS_PROXY=http://127.0.0.1:${proxyPort}
-export no_proxy=localhost,127.0.0.1,::1,api.noctalia.dev
-export NO_PROXY=localhost,127.0.0.1,::1,api.noctalia.dev
-EOF
-        set_kde_manual
-        echo "proxy on — done"
-        ;;
-
-      off)
-        rm -f "$DROPIN"
-        rmdir --ignore-fail-on-non-empty "$DROPIN_DIR" 2>/dev/null || true
-        systemctl daemon-reload
-        systemctl restart nix-daemon.service
-
-        rm -f "$PROXY_ENV"
-        set_kde_direct
-        echo "proxy off — done"
-        ;;
-
-      status)
-        if [ -f "$DROPIN" ]; then
-          echo "nix-daemon proxy: ON"
-        else
-          echo "nix-daemon proxy: OFF"
-        fi
-        if [ -f "$PROXY_ENV" ]; then
-          echo "shell proxy file:  ON  ($PROXY_ENV)"
-        else
-          echo "shell proxy file:  OFF"
-        fi
-        echo "env: HTTP_PROXY=''${HTTP_PROXY:-<unset>}"
-        ;;
-
-      *)
-        echo "Usage: proxy {on|off|status}" >&2
-        exit 1
-        ;;
-    esac
-  '';
+  # clash-verge-rev 2.5.2：修复 NixOS 上的"内核通信错误" UI bug（上游 issue #7316）。
+  # 当前 nixpkgs 锁定 2.5.1，这里通过本地复刻的 package 定义升级到 2.5.2，
+  # 依赖（webkitgtk/mihomo/pnpm_11）在当前 nixpkgs 中均可用，不触发大更新。
+  clash-verge-rev = pkgs.callPackage ../pkgs/clash-verge-rev/package.nix { };
 in
 {
-  environment.systemPackages = [ proxyToggle ];
+  # Clash Verge Rev — 图形代理客户端
+  # 已导入订阅后开启 TUN：serviceMode 让 root 运行的服务负责创建 TUN 网卡，
+  # tunMode 给 GUI 授予额外 capabilities。
+  programs.clash-verge = {
+    enable = true;
+    package = clash-verge-rev;
+    serviceMode = true;
+    tunMode = true;
+  };
 
-  # sudo preserves proxy env vars, so "sudo cmd" inherits whatever
-  # HTTP_PROXY the calling shell currently has
-  security.sudo.extraConfig = ''
-    Defaults env_keep += "http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY"
-  '';
+  # clash 内核需要绑定 53 端口做 DNS 解析（fake-ip / dns-hijack），
+  # 但 nixpkgs 模块的 CapabilityBoundingSet 默认不含 CAP_NET_BIND_SERVICE，
+  # 导致 "listen udp :53: bind: permission denied" 而 TUN 断网。
+  systemd.services.clash-verge.serviceConfig = {
+    CapabilityBoundingSet = [
+      "CAP_NET_ADMIN"
+      "CAP_NET_RAW"
+      "CAP_SYS_ADMIN"
+      "CAP_DAC_OVERRIDE"
+      "CAP_SETUID"
+      "CAP_SETGID"
+      "CAP_CHOWN"
+      "CAP_MKNOD"
+      "CAP_NET_BIND_SERVICE"
+    ];
+  };
 
-  # bash 兜底：login shell 加载 proxy
-  programs.bash.interactiveShellInit = ''
-    [ -f /etc/proxy.env ] && source /etc/proxy.env
+  # 清理旧版 serviceMode 留下的 root 所有权残留：
+  # 这些文件导致 GUI 以普通用户身份无法写入配置、内核无法创建 socket，
+  # 从而"启动失败" / "内核通信错误"。
+  system.activationScripts.clash-verge-cleanup = ''
+    rm -rf /run/user/1002/clash-verge-rev
+    if [ -d /home/cloudygirl/.local/share/io.github.clash-verge-rev.clash-verge-rev ] \
+       && [ "$(stat -c %U /home/cloudygirl/.local/share/io.github.clash-verge-rev.clash-verge-rev 2>/dev/null)" != "cloudygirl" ]; then
+      rm -rf /home/cloudygirl/.local/share/io.github.clash-verge-rev.clash-verge-rev
+    fi
   '';
 }

@@ -103,8 +103,7 @@ in
     autosub
 
     # ── 梯子 ──
-    v2rayn
-    sing-box
+    # Clash Verge Rev（见 modules/proxy.nix）
 
     # ── Python ──
     python3

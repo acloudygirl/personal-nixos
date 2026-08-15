@@ -13,7 +13,6 @@
     ./modules/packages.nix
     ./modules/qq-fix.nix
     ./modules/power.nix
-    ./modules/proxy-tools.nix
     ./modules/proxy.nix
     ./modules/users.nix
     ./sddm-theme.nix
