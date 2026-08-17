@@ -6,10 +6,10 @@
     virtualisation.docker.autoPrune.dates = "weekly";
 
     virtualisation.docker.daemon.settings = {
-        registry-mirrors = [
-            "https://hub.rat.dev"
-            "https://docker.1ms.run"
-            "https://docker.m.daocloud.io"
-        ];
+        proxies = {
+            http-proxy = "http://127.0.0.1:7897";
+            https-proxy = "http://127.0.0.1:7897";
+            no-proxy = "localhost,127.0.0.1";
+        };
     };
 }
