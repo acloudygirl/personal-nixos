@@ -12,6 +12,7 @@
     ./modules/nix-settings.nix
     ./modules/packages.nix
     ./modules/qq-fix.nix
+    ./modules/anki-fix.nix
     ./modules/power.nix
     ./modules/proxy.nix
     ./modules/users.nix

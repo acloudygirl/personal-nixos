@@ -159,7 +159,7 @@ in
     pandoc
     texliveFull
     calibre
-    anki
+    # anki 已移至 modules/anki-fix.nix（XWayland wrapper，修复 Wayland 下输入法重复）
 
     # ── 视频播放 ──
     mpv
