@@ -163,11 +163,6 @@ in
 
     # ── 视频播放 ──
     mpv
-    haruna
-
-    # ── 字幕生成 ──
-    whisper-cpp
-    ffmpeg
 
     # ── AI ──
     codex
