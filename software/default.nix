@@ -39,6 +39,9 @@ in
 
       home.stateVersion = "26.05";
 
+      # npm 全局安装目录加入 PATH，使 codebuddy/codex 等 npm 全局命令可用
+      home.sessionPath = [ "$HOME/.npm-global/bin" ];
+
       home.packages = with pkgs; [
         xwayland-satellite
         kitty

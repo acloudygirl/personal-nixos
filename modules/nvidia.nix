@@ -34,12 +34,12 @@
     };
   };
 
-  # Wayland NVIDIA 环境变量
+  # PRIME offload 模式下 Intel 是主显卡，不应全局强制 NVIDIA 后端。
+  # 全局强制 __GLX_VENDOR_LIBRARY_NAME / GBM_BACKEND / LIBVA_DRIVER_NAME
+  # 会让跑在 Intel 核显上的应用（浏览器等）错乱，导致 i915 GPU HANG。
+  # 需要 NVIDIA 的应用请用 __NV_PRIME_RENDER_OFFLOAD=1 按需调用。
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";
-    LIBVA_DRIVER_NAME = "nvidia";
   };
 
   # 确保 nouveau 被禁用
