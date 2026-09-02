@@ -39,11 +39,15 @@ in
 
       home.stateVersion = "26.05";
 
-      # npm 全局安装目录加入 PATH，使 codebuddy/codex 等 npm 全局命令可用
-      home.sessionPath = [ "$HOME/.npm-global/bin" ];
+      # npm / cargo 全局安装目录加入 PATH（codebuddy/codex/qq-wayland-clipboard 等命令）
+      home.sessionPath = [
+        "$HOME/.npm-global/bin"
+        "$HOME/.cargo/bin"
+      ];
 
       home.packages = with pkgs; [
         xwayland-satellite
+        btop # 现代版 top：彩色图表 + GPU 监控
         kitty
         zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
         dsh-web-launch
