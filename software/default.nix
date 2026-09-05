@@ -51,6 +51,9 @@ in
         kitty
         zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
         dsh-web-launch
+        swaylock-effects
+        swayidle
+        cmatrix
       ];
 
       programs.noctalia = {
@@ -69,6 +72,20 @@ in
         };
         Service = {
           ExecStart = "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1";
+          Restart = "on-failure";
+        };
+        Install.WantedBy = [ "graphical-session.target" ];
+      };
+
+      systemd.user.services.swayidle = {
+        Unit = {
+          Description = "Swayidle (idle management for Niri)";
+          PartOf = [ "graphical-session.target" ];
+          After = [ "graphical-session.target" ];
+          Requisite = [ "graphical-session.target" ];
+        };
+        Service = {
+          ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 300 'swaylock -f' timeout 301 'niri msg action power-off-monitors' before-sleep 'swaylock -f'";
           Restart = "on-failure";
         };
         Install.WantedBy = [ "graphical-session.target" ];
@@ -120,6 +137,8 @@ in
         </action>
         </actions>
       '';
+
+      xdg.configFile."swaylock/config".source = ./config/swaylock/config;
 
       xdg.configFile."kde-mimeapps.list".source =
         config.xdg.configFile."mimeapps.list".source;

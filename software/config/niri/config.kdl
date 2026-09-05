@@ -188,6 +188,15 @@ window-rule {
     default-column-width { proportion 0.98; }
 }
 
+window-rule {
+    match app-id="^cmatrix$"
+
+    open-floating true
+    open-fullscreen true
+    clip-to-geometry false
+    geometry-corner-radius 0
+}
+
 binds {
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
@@ -202,6 +211,9 @@ binds {
 
     Print { spawn "flameshot" "gui"; }
     Ctrl+Alt+A { spawn-sh "grim -g \"$(slurp)\" -t png - | wl-copy -t image/png"; }
+
+    Mod+L allow-when-locked=true { spawn-sh "swaylock -f"; }
+    Mod+Period { spawn-sh "kitty --class cmatrix -e cmatrix"; }
 
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }

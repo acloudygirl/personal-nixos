@@ -1,0 +1,48 @@
+# 锁屏视觉效果
+effect=bloom
+effect-scale=1.0
+effect-blur=20x3
+
+# 颜色（配合 Niri 主题）
+inside-color=1a1a1aee
+ring-color=ddaa77ee
+line-color=00000000
+key-hl-color=eebb99ee
+bs-hl-color=ef5350ee
+
+# 文字
+font=monospace
+font-size=14
+text-color=eebb99ee
+text-ver-align=bottom
+text-inside-ver-align=top
+
+# 输入框
+inside-ver-color=1a1aadbbee
+ring-ver-color=ddaa77ee
+text-ver-color=eebb99ee
+
+# 错误状态
+inside-wrong-color=ef5350ee
+ring-wrong-color=ef5350ee
+text-wrong-color=ffffffff
+
+# 输入中
+inside-clear-color=1a1a1aee
+ring-clear-color=ddaa77ee
+text-clear-color=eebb99ee
+
+# 认证中
+inside-caps-lock-color=1a1aadbbee
+ring-caps-lock-color=ddaa77ee
+text-caps-lock-color=eebb99ee
+
+# 其他选项
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+indicator-radius=120
+indicator-thickness=10
+daemonize
+screenshots
+fade-in=0

@@ -184,6 +184,12 @@ in
     mcp-nixos
     github-mcp-server
 
+    # ── 安全工具 ──
+    audit
+    aide
+    lynis
+    nmap
+
     # ── 工具 ──
     ttyd
     lunar-client
