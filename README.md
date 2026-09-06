@@ -1,58 +1,73 @@
-# NixOS 配置说明
-**如下是AI写的**
+# NixOS 工作站配置
 
+本仓库声明主机 `nixos` 的 NixOS 和 Home Manager 配置。重构目录或模块时，默认保持系统行为不变；依赖升级、服务调整和结构重构分开进行。
 
-这个仓库是当前机器的 NixOS flake 配置，目标主机是 `nixos`。常用检查命令：
+## 配置分层
 
-```bash
-nixos-rebuild dry-build --flake /home/cloudygirl/nixos#nixos
+```text
+flake.nix                         输入版本与系统组装
+├── configuration.nix             本机模块选择、swap、安全策略、系统兼容版本
+│   ├── hardware-configuration.nix 硬件扫描结果
+│   ├── modules/                  系统级功能模块
+│   └── sddm-theme.nix            登录主题与背景打包
+├── fonts.nix                     系统字体与回退顺序
+└── software/default.nix           NixOS 与 Home Manager 的接入层
+    └── software/home.nix          用户配置入口、会话 PATH、用户兼容版本
+        ├── shell.nix             Fish、Starship、终端工具集成
+        ├── apps.nix              浏览器、Rime、WPS、Thunar
+        ├── mime.nix              默认打开方式及桌面兼容映射
+        ├── desktop.nix           Noctalia、Niri、Kitty、锁屏与用户服务
+        └── packages.nix          用户软件包与自定义启动器桌面入口
+
+pkgs/                             自定义包构建函数，不直接设置系统选项
+software/config/                  被模块引用的配置源文件及未接管快照
+assets/                           登录背景等静态资源
+notes/                            笔记与 Pandoc/XeLaTeX 模板
+scripts/、anki/、download/、watt/、windows/
+                                  辅助资料或独立工作流，不自动导入系统
 ```
 
-应用配置需要 root 权限：
+`flake.lock` 锁定 `nixpkgs`、Home Manager、Noctalia、Zen Browser 及其依赖。Home Manager 使用本仓库的 `software/`，不导入旁边的 `home-config/` 仓库。
 
-```bash
-sudo nixos-rebuild switch --flake /home/cloudygirl/nixos#nixos
-```
+## 系统模块索引
 
-## 入口文件
+| 文件 | 职责 |
+| --- | --- |
+| `modules/boot.nix` | GRUB/EFI 和 Windows 启动项 |
+| `modules/hardware-tweaks.nix` | 华硕键盘背光、蓝牙和硬件调整 |
+| `modules/nvidia.nix` | NVIDIA 驱动与 PRIME |
+| `modules/power.nix` | TLP、CPU 与电源策略 |
+| `modules/locale.nix` | 中文区域、时区与 Fcitx5 |
+| `modules/networking.nix` | 主机名、NetworkManager、SSH 与网络设置 |
+| `modules/desktop.nix` | 桌面会话、音频、Flatpak、图形提权与文件管理器服务 |
+| `modules/nix-settings.nix` | Nix 功能、缓存、unfree 策略与垃圾回收 |
+| `modules/packages.nix` | 系统软件包清单，调用 `pkgs/` 中的构建函数 |
+| `modules/qq-fix.nix`、`modules/anki-fix.nix` | 应用兼容性包装器及安装 |
+| `modules/proxy.nix` | Clash Verge、权限包装与激活清理 |
+| `modules/docker-setting.nix` | Docker 服务、用户组和代理 |
+| `modules/users.nix` | 本地用户定义 |
+| `modules/shell.nix` | 系统编辑器环境变量与别名模块接入 |
+| `modules/shell-aliases.nix` | 系统 shell 别名配置 |
+| `modules/shell-aliases-data.nix` | 系统 shell 与用户 Fish 共享的纯数据，不是模块 |
+| `modules/steam.nix` | Steam 启用与字体 |
+| `modules/security/` | AIDE、审计和加固的选项定义与实现 |
 
-- `flake.nix`：flake 入口，声明 `nixpkgs`、`home-manager` 输入，并组装 `nixosConfigurations.nixos`。
-- `flake.lock`：锁定输入版本，保证构建结果可复现。
-- `configuration.nix`：系统主入口，只保留模块导入和 `system.stateVersion`。
-- `hardware-configuration.nix`：硬件扫描生成的配置，主要是文件系统、启动设备、内核模块等。
+`configuration.nix` 选择本机安全策略；`modules/security/` 实现这些策略。`modules/deepseek-harness-security.nix` 当前未导入，仅放入目录不会启用它。
 
-## 独立模块
+## 放在哪里
 
-- `modules/boot.nix`：GRUB/EFI 启动加载器配置。
-- `modules/desktop.nix`：Xwayland、Plasma、Niri、SDDM 启用项，以及 Flatpak/Flathub 配置。
-- `modules/hardware-tweaks.nix`：内核参数、华硕键盘背光、蓝牙等硬件相关调整。
-- `modules/locale.nix`：中文区域设置、时区和 Fcitx5 输入法。
-- `modules/networking.nix`：主机名、NetworkManager 和网络托盘。
-- `modules/nix-settings.nix`：Nix flakes、二进制缓存和 unfree 包策略。
-- `modules/packages.nix`：全系统命令行工具、桌面应用、开发工具链和 `mdpdf` 命令。
-- `modules/power.nix`：TLP、电源管理和安静 CPU 配置。
-- `modules/proxy-tools.nix`：sing-box 权限包装器和 v2rayN sing-box 核心链接。
-- `modules/users.nix`：本机用户配置。
-- `fonts.nix`：系统字体配置。
-- `sddm-theme.nix`：SDDM 登录界面主题、登录背景、主题依赖和主题包配置。
-- `software/default.nix`：用户软件和 Home Manager 配置入口。
-- `software/default.nix` 里的 `xdg.mimeApps`：默认打开方式配置，例如文件夹用 Thunar，图片用 Gwenview，视频用 Haruna，音频用 Elisa，压缩包用 Ark，`.nix`/文本用 VS Code，`.md` 用 MarkText，`.pdf` 用 Sioyek。
-- `notes/`：Pandoc + XeLaTeX 中文 PDF 笔记模板。
+- 系统服务、驱动、权限或全局环境变量放在对应的 `modules/` 功能模块。
+- 系统通用软件包加到 `modules/packages.nix`；仅当前用户需要的软件包加到 `software/packages.nix`。应用模块自动安装的包通常不需要重复添加。
+- 自定义命令或运行环境放在 `pkgs/<name>.nix`，显式声明构建依赖，再通过 `pkgs.callPackage` 安装。`mdpdf` 的模板仍位于 `notes/template/`。
+- 用户应用选项放在 `software/apps.nix`；桌面与用户服务放在 `software/desktop.nix`；默认打开方式只在 `software/mime.nix` 维护。
+- 应用原生配置文件放在 `software/config/<app>/`，在负责该应用的模块中显式声明 `xdg.configFile` 或 `xdg.dataFile` 映射。
+- 新模块需要加入相应入口的 `imports`。不按目录自动导入，避免启用草稿、备份或把纯数据当成模块。
 
-## 资源和软件配置
+保持一文件一类职责，但不为每个选项创建一个文件。只有独立变化、复用或明显过长的功能才继续拆分；当前单主机配置不需要额外的主机框架或自定义开关体系。
 
-- `assets/login-bg.jpg`：SDDM 登录背景图，由 `sddm-theme.nix` 打包进主题。
-- `software/config/`：适合上传的用户软件配置快照。
-- `software/config/niri/config.kdl`：Niri 配置源文件，由 Home Manager 部署到 `~/.config/niri/config.kdl`。
+NixOS 模块与 Home Manager 模块使用不同的选项空间，不要互相直接导入。外部 flake 输入通过 `software/default.nix` 的 `home-manager.extraSpecialArgs` 传给用户模块，避免依赖外层函数的隐式作用域。
 
-以后新增应用自己的配置文件时，优先放到 `software/config/<app>/`，再在 `software/default.nix` 里用 `xdg.configFile` 映射到 `~/.config/<app>/...`。
 
-不是所有 `software/config/` 里的文件都应该立刻用 Home Manager 强制接管。像 KDE、Noctalia、Fcitx5 这类应用会自己写配置，先作为可上传快照保存；确定要声明式管理后，再单独加 `xdg.configFile` 映射。
+## 隐私与生成物
 
-## 清理规则
-
-- 不提交 `result` 这类 `nix build` 生成的结果链接。
-- 不保留 `*.bak` 备份文件；需要历史版本时用 Git。
-- 不提交浏览器、QQ、VS Code/Codex 缓存、Cookie、数据库、会话历史和 API key。
-- 系统级设置放 `configuration.nix` 或独立 `.nix` 模块。
-- 用户软件包和 `~/.config` 下的应用配置放 `software/`。
+`.gitignore` 排除本地凭据、环境文件、工具缓存、构建结果、笔记 PDF、Anki 导出、下载目录以及含个人状态的桌面快照。`windows/` 下的个人目录链接也不纳入版本控制。本地文件可以继续使用，但不会进入新的普通 `git add`

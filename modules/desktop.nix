@@ -1,6 +1,12 @@
 { lib, pkgs, ... }:
 
 {
+  # 文件管理器的图形提权、磁盘挂载和缩略图支持。
+  security.polkit.enable = true;
+  services.udisks2.enable = true;
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;
+
   # Wayland 兼容性：启用 Xwayland，并让 Electron/Chromium 类应用优先使用原生 Wayland 后端
   programs.xwayland.enable = true;
   environment.variables = {
@@ -35,7 +41,6 @@
   ];
 
   # Flatpak 支持和 Flathub 远程仓库自动配置。
-  programs.steam.enable = true;   #自动拉取steam32位库
   services.flatpak.enable = true;
   systemd.services.flatpak-add-flathub = {
     description = "Add Flathub remote for Flatpak";

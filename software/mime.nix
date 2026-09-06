@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ config, lib, ... }:
 
 let
   inherit (lib) genAttrs;
@@ -108,6 +108,15 @@ let
   // genAttrs videoTypes (_: haruna);
 in
 {
+  xdg.configFile."kde-mimeapps.list".source =
+    config.xdg.configFile."mimeapps.list".source;
+  xdg.configFile."niri-mimeapps.list".source =
+    config.xdg.configFile."mimeapps.list".source;
+  xdg.dataFile."applications/kde-mimeapps.list".source =
+    config.xdg.configFile."mimeapps.list".source;
+  xdg.dataFile."applications/niri-mimeapps.list".source =
+    config.xdg.configFile."mimeapps.list".source;
+
   xdg.mimeApps = {
     enable = true;
     associations.added = mimeDefaults // {

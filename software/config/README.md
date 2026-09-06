@@ -1,33 +1,32 @@
-# 用户软件配置
+# 用户软件配置资源
 
-这里放适合上传的 `~/.config` 配置快照。
+这里同时保存 Home Manager 部署的源文件和未接管的应用配置快照。是否生效由 `software/` 中的显式文件映射决定，而不是文件是否出现在本目录。
 
-当前已收进来的内容包括：
+## 已声明管理
 
-- `niri/`：Niri 窗口管理器配置，已经在 `software/default.nix` 中映射到 `~/.config/niri/config.kdl`。
-- `noctalia/`：Noctalia Shell 的主题和行为设置，已模块化管理：
-  - `default.nix`：主入口，合并所有子模块
-  - `bar.nix`：状态栏及 widget 配置
-  - `dock.nix`：Dock 设置
-  - `general.nix`：通用设置、快捷键、hooks
-  - `notifications.nix`：通知和 OSD
-  - `wallpaper.nix`：壁纸设置
-  - `appearance.nix`：配色方案、UI、夜间模式
-  - `system.nix`：系统监控、亮度、空闲、性能
-  - `apps.nix`：应用启动器、日历、控制中心、会话菜单
-  - `misc.nix`：音频、网络、位置等杂项
-- `fcitx5/`：输入法配置，已排除生成缓存 `conf/cached_layouts`。
-- `glow/`：Glow Markdown 阅读器配置。
-- `sioyek/`：Sioyek PDF 阅读器用户偏好。
-- `gtk-3.0/`、`gtk-4.0/`、`gtkrc`、`gtkrc-2.0`：GTK 外观配置。
-- `fontconfig/`、`xsettingsd/`：字体和 XSettings 配置。
-- 根目录下的 KDE/Qt/桌面偏好文件：例如 `kdeglobals`、`kglobalshortcutsrc`、`kioslaverc`、`mimeapps.list`。
+| 源文件或目录 | 所属模块 | 部署位置 |
+| --- | --- | --- |
+| `niri/config.kdl` | `software/desktop.nix` | `~/.config/niri/config.kdl` |
+| `kitty/kitty.conf` | `software/desktop.nix` | `~/.config/kitty/kitty.conf` |
+| `noctalia/noctalia-base-settings-v4.json` | `software/desktop.nix` | `~/.config/noctalia/config.json` |
+| `swaylock/config` | `software/desktop.nix` | `~/.config/swaylock/config` |
+| `fcitx5/rime/` 中显式列出的六个文件 | `software/apps.nix` | `~/.local/share/fcitx5/rime/` |
+| `wps-desktop/` 中的三个桌面入口 | `software/apps.nix` | `~/.local/share/applications/` |
 
-刻意没有收进来：
+Thunar 自定义动作由 `software/apps.nix` 生成；默认打开方式与 KDE/Niri 兼容文件由 `software/mime.nix` 生成，不使用此目录中的 `mimeapps.list` 快照。DeepSeek 桌面入口由 `software/packages.nix` 生成。
 
-- 浏览器目录，如 `google-chrome/`、`chromium/`、`BraveSoftware/`。
-- 即时通讯和 Electron 应用状态目录，如 `QQ/`、`Code/`、`Codex/`。
-- Cookie、数据库、缓存、锁文件、会话历史、同步状态。
-- VS Code `Code/User/settings.json`，因为当前文件里包含 API key。
+## 未接管快照
 
-如果要让某个配置由 Home Manager 强制接管，再在 `software/default.nix` 里添加对应的 `xdg.configFile`。频繁由应用写入的配置不要急着映射，否则应用可能无法保存设置。
+未被模块显式引用的 Noctalia、Fcitx5、KDE/Qt、GTK、Fontconfig、XSettings、Glow、Sioyek 等配置仅作为快照保存，不自动部署。Noctalia 当前使用 JSON 源文件，不存在按状态栏、Dock 等拆分的 Nix 子模块。
+
+含文件选择历史、设备或活动标识、本机路径的 Qt、蓝牙、KWin、Plasma 和旧 Noctalia TOML 快照已列入 `.gitignore`，仅保留本地副本。正在部署的 Noctalia JSON、Niri 等源配置仍被保留；它们含有本机设置，不代表已经匿名化。
+
+新增管理项时，将源文件放在 `<app>/` 下，并在负责该应用的模块中添加单独映射。保留必要的相邻资源依赖，例如 GTK 配置引用的 `colors.css`。应用频繁写入的配置应先确认能否只读管理，不要默认设置 `force = true`。
+
+## 排除内容
+
+- 浏览器配置目录、即时通讯和 Electron 应用状态目录。
+- Cookie、数据库、缓存、锁文件、会话历史与同步状态。
+- API key 和其他凭据，包括可能带有凭据的编辑器设置。
+
+修改流程、验证命令与模块职责见仓库根目录的 `README.md`。

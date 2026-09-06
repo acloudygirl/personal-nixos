@@ -1,87 +1,9 @@
 { pkgs, ... }:
 
 let
-  # Markdown 转 PDF
-  # 用法：mdpdf note.md [output.pdf]
-  mdpdf = pkgs.writeShellScriptBin "mdpdf" ''
-    set -euo pipefail
-
-    if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-      echo "Usage: mdpdf INPUT.md [OUTPUT.pdf]" >&2
-      exit 2
-    fi
-
-    input="$(${pkgs.coreutils}/bin/realpath "$1")"
-    if [ "$#" -eq 2 ]; then
-      output="$(${pkgs.coreutils}/bin/realpath -m "$2")"
-    else
-      output="''${input%.*}.pdf"
-    fi
-
-    workdir="$(${pkgs.coreutils}/bin/dirname "$input")"
-    filename="$(${pkgs.coreutils}/bin/basename "$input")"
-
-    cd "$workdir"
-    exec ${pkgs.pandoc}/bin/pandoc "$filename" \
-      -d ${../notes/template/pandoc.yaml} \
-      -o "$output"
-  '';
-
-  # 视频自动生成字幕
-  # 用法：autosub 视频文件.mp4 [语言] [模型]
-  # 语言默认 zh（中文），可选 en/ja 等
-  # 模型默认 small，可选 tiny/base/small/medium/large-v3
-  autosub = pkgs.writeShellScriptBin "autosub" ''
-    set -euo pipefail
-
-    if [ "$#" -lt 1 ]; then
-      echo "Usage: autosub VIDEO [LANG] [MODEL]" >&2
-      echo "  LANG:   zh(默认), en, ja, ko, ..." >&2
-      echo "  MODEL:  tiny, base, small(默认), medium, large-v3" >&2
-      exit 2
-    fi
-
-    input="$(${pkgs.coreutils}/bin/realpath "$1")"
-    lang="''${2:-zh}"
-    model="''${3:-small}"
-
-    model_dir="$HOME/.cache/whisper-cpp"
-    model_file="$model_dir/ggml-$model.bin"
-
-    if [ ! -f "$model_file" ]; then
-      echo "Downloading model: $model ..." >&2
-      ${pkgs.coreutils}/bin/mkdir -p "$model_dir"
-      ${pkgs.wget}/bin/wget -q -O "$model_file" \
-        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-$model.bin"
-    fi
-
-    workdir="$(${pkgs.coreutils}/bin/dirname "$input")"
-    filename="$(${pkgs.coreutils}/bin/basename "$input")"
-    name="''${filename%.*}"
-
-    tmpdir="$(${pkgs.coreutils}/bin/mktemp -d)"
-    ${pkgs.ffmpeg}/bin/ffmpeg -i "$input" -vn -acodec pcm_s16le -ar 16000 -ac 1 "$tmpdir/audio.wav" -y -loglevel error
-
-    echo "Generating subtitles (model: $model, lang: $lang) ..." >&2
-    ${pkgs.whisper-cpp}/bin/whisper-cpp -m "$model_file" -f "$tmpdir/audio.wav" -l "$lang" -osrt -o "$tmpdir"
-
-    ${pkgs.coreutils}/bin/cp "$tmpdir/audio.srt" "$workdir/$name.srt"
-    ${pkgs.coreutils}/bin/rm -rf "$tmpdir"
-
-    echo "Done: $workdir/$name.srt" >&2
-  '';
-
-  # B 站视频笔记 skill 的 Python 运行环境
-  # 依赖：yt-dlp / imagehash / rapidocr-onnxruntime / python-docx / pillow / requests / python-dotenv
-  bili-notes-python = pkgs.python3.withPackages (ps: with ps; [
-    yt-dlp
-    imagehash
-    rapidocr-onnxruntime
-    python-docx
-    pillow
-    requests
-    python-dotenv
-  ]);
+  mdpdf = pkgs.callPackage ../pkgs/mdpdf.nix { };
+  autosub = pkgs.callPackage ../pkgs/autosub.nix { };
+  bili-notes-python = pkgs.callPackage ../pkgs/bili-notes-python.nix { };
 in
 
 {

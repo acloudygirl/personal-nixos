@@ -1,8 +1,12 @@
 { pkgs, ... }:
 
+let
+  aliases = import ../modules/shell-aliases-data.nix;
+in
 {
   programs.fish = {
     enable = true;
+    shellAliases = aliases;
     interactiveShellInit = ''
       # fzf + fd
       set -gx FZF_DEFAULT_COMMAND "fd --type f --hidden --follow --exclude .git"
